@@ -1,0 +1,89 @@
+/** **************************************
+* Fonts: app
+*************************************** */
+@import '@fontsource-variable/public-sans';
+/* 
+@import '@fontsource/barlow/400.css';
+@import '@fontsource/barlow/500.css';
+@import '@fontsource/barlow/600.css';
+@import '@fontsource/barlow/700.css';
+@import '@fontsource/barlow/800.css'; */
+
+/** **************************************
+* Fonts: options
+*************************************** */
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/nunito-sans';
+
+/** **************************************
+* Plugins
+*************************************** */
+/* scrollbar */
+@import './components/scrollbar/styles.css';
+
+/* image */
+@import './components/image/styles.css';
+
+/* lightbox */
+@import './components/lightbox/styles.css';
+
+
+/** **************************************
+* Baseline
+*************************************** */
+html {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+body,
+#root,
+#root__layout {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 100%;
+  flex-direction: column;
+}
+
+/* *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: inherit;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #cacfd5;
+  border-radius: 20px;
+  border: 2px solid #cacfd5;
+}
+
+*::-webkit-scrollbar-corner {
+  background: inherit;
+} */
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: none;
+}
+input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+

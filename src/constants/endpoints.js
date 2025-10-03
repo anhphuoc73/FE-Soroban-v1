@@ -1,0 +1,84 @@
+import { CONFIG } from 'src/config-global';
+
+export const endpoints = {
+  auth: {
+    login: `${CONFIG.serverUrl}/auth/login`,
+    loginRemote: `${CONFIG.serverUrl}/auth/login-remote`,
+    logout: `${CONFIG.serverUrl}/auth/logout`,
+    forgotPassword: `${CONFIG.serverUrl}/auth/forgot-password`,
+    resetPassword: `${CONFIG.serverUrl}/auth/reset-password`,
+    keyTokens: `${CONFIG.serverUrl}/auth/key-tokens`,
+    changePassword: `${CONFIG.serverUrl}/auth/change-password`,
+    sendMailChangeEmail: `${CONFIG.serverUrl}/auth/send-mail-change-email`,
+    sendMailChangeEmailEmployee: `${CONFIG.serverUrl}/auth/send-mail-change-email-employee`,
+    changeEmail: `${CONFIG.serverUrl}/auth/change-email`,
+    changeEmailEmployee: `${CONFIG.serverUrl}/auth/change-email-employee`,
+  },
+  admin: {
+    addAdmin: `${CONFIG.serverUrl}/admin`,
+    listAdmin: `${CONFIG.serverUrl}/admin`,
+    updateAdmin: `${CONFIG.serverUrl}/admin`,
+    deleteAdmin: `${CONFIG.serverUrl}/admin`,
+  },
+  center: {
+    addCenter: `${CONFIG.serverUrl}/center`,
+    listCenter: `${CONFIG.serverUrl}/center`,
+    updateCenter: `${CONFIG.serverUrl}/center`,
+    deleteCenter: `${CONFIG.serverUrl}/center`,
+    getListCenter: `${CONFIG.serverUrl}/center/listCenter`,
+  },
+  class: {
+    addClass: `${CONFIG.serverUrl}/class`,
+    // listCenter: `${CONFIG.serverUrl}/center`,
+    // updateCenter: `${CONFIG.serverUrl}/center`,
+    // deleteCenter: `${CONFIG.serverUrl}/center`,
+    getListClass: `${CONFIG.serverUrl}/class`,
+  },
+  role: {
+    root: `${CONFIG.serverUrl}/roles`,
+  },
+  configMath : {
+    fingerMath: `${CONFIG.serverUrl}/configMath/config-finger-math`,
+    createPracticeFingerMath: `${CONFIG.serverUrl}/configMath/practice-finger-math`,
+    savePracticeFingerMath: `${CONFIG.serverUrl}/configMath/save-practice-finger-math`,
+    
+  },
+  user: {
+    me: '/user/me',
+    root: `${CONFIG.serverUrl}/user`,
+    updateShowingContactField: `${CONFIG.serverUrl}/user/contact/column-config`,
+    updateInfoUser: `${CONFIG.serverUrl}/user/update-info-user`,
+    updateInfoNotification: `${CONFIG.serverUrl}/user/update-info-notification`,
+    getInfoUser: `${CONFIG.serverUrl}/user/get-info-user`,
+    checkExistEmail: `${CONFIG.serverUrl}/user/check-exist-email`,
+
+    addUser: `${CONFIG.serverUrl}/user`,
+    listUser: `${CONFIG.serverUrl}/user`,
+    updateUser: `${CONFIG.serverUrl}/user`,
+    deleteUser: `${CONFIG.serverUrl}/user`,
+    getListUserCenter: `${CONFIG.serverUrl}/user/get-list-user-center`,
+    getListUserTeacher: `${CONFIG.serverUrl}/user/get-list-user-teacher`,
+  },
+  notification: {
+    root: `${CONFIG.serverUrl}/notification`,
+  },
+  ticket: {
+    addTypeTicket: `${CONFIG.serverUrl}/tickets/add-type-ticket`,
+    getTypeTicket: `${CONFIG.serverUrl}/tickets/get-type-ticket`,
+    addTicket: `${CONFIG.serverUrl}/tickets/add-ticket`,
+    getTicket: `${CONFIG.serverUrl}/tickets/get-ticket`,
+    deleteTicket: `${CONFIG.serverUrl}/tickets/delete-ticket`,
+    getDetailTicket: `${CONFIG.serverUrl}/tickets/get-ticket-by-id`,
+    getAllUsers: `${CONFIG.serverUrl}/tickets/get-all-users`,
+    editTicket: `${CONFIG.serverUrl}/tickets/edit-ticket`,
+  },
+  chat: {
+    getConversations: `${CONFIG.serverUrl}/chat/get-conversations`,
+    getListSocial: `${CONFIG.serverUrl}/chat/get-list-social`,
+    getConversation: `${CONFIG.serverUrl}/chat/get-messages-by-conversation-id`,
+    getTags: `${CONFIG.serverUrl}/chat/get-tags`,
+    clearTagOnConversation: `${CONFIG.serverUrl}/chat/clear-tag-on-conversation`,
+    addTagOnConversation: `${CONFIG.serverUrl}/chat/add-tag-on-conversation`,
+    addTag: `${CONFIG.serverUrl}/chat/add-tag-for-conversation`,
+  },
+};
