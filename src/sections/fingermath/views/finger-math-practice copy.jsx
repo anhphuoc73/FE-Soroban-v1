@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Typography, TextField, IconButton } from '@mui/material';
 
 import { Iconify } from 'src/components/iconify';
-import { Timer } from './timer-test';
+import { Timer } from './timer';
 import { ShowCaculator } from './show-caculator';
 import { ResultMathView } from '../../../components/math/result';
 

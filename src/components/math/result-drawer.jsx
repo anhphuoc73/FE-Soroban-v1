@@ -48,7 +48,7 @@ export function ResultDrawer({ open, onClose, total, correct, wrong, data = [] }
               </Typography>
               <Typography variant="body2">
                 👉 Bạn nhập:{" "}
-                {item.inputResult !== undefined ? item.inputResult : "Chưa làm"}{" "}
+                {item.inputResult !== undefined ? item.inputResult : "Trống"}{" "}
                 ({item.result === 1 ? "✅ Đúng" : "❌ Sai"})
               </Typography>
             </ListItem>

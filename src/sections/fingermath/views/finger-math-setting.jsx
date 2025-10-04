@@ -1,5 +1,5 @@
 // import React from 'react';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Box,
     Button,
@@ -151,6 +151,8 @@ export function FingerMathSettingView() {
         setErrorMessages(newErrorMessages);
         if (isValid) {
             const param = {
+                mathTypeId: 1,
+                mathTypeName: "finger",
                 numberQuestion,
                 calculationLength,
                 timePerCalculation,
@@ -165,7 +167,7 @@ export function FingerMathSettingView() {
                 soundEnabled,
                 soundEnabledName: soundEnabled === 1 ? "Có" : soundEnabled === 0 ? "Không" : "",
                 keyParent: parentId,
-                keyParentName: levelParents.find(item => item.id === parentId)?.value,
+                valueParent: levelParents.find(item => item.id === parentId)?.value,
             };
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
@@ -180,6 +182,44 @@ export function FingerMathSettingView() {
             )
         }
     } 
+
+    const options = useMemo(() => {
+            const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
+    
+            // Nếu idChild === 4 => chỉ 1 lựa chọn: '4' lặp max lần
+            if (childId === 4) {
+                const value = "4".repeat(max);
+                return [{ value, label: `${value}` }];
+            }
+            if(childId === 5 || childId === 6 || childId === 7 || childId === 8 || childId === 9){
+                const value = "9".repeat(max);
+                return [{ value, label: `${value}` }];
+            }
+    
+            // Trường hợp bình thường
+            if (max === 1) {
+                return [{ value: "9", label: "1 chữ số (9)" }];
+            }
+    
+            const firstValue = "9".repeat(max);
+            const secondValue = "9".repeat(max + 1);
+    
+            return [
+                { value: firstValue, label: `${firstValue}` },
+                { value: secondValue, label: `${secondValue}` },
+            ];
+        }, [firstNumber, secondNumber, childId]);
+    
+        useEffect(() => {
+            if (options?.length > 0) {
+                // chỉ set lại nếu rangeResult chưa chọn hoặc không còn hợp lệ
+                const exists = options.some(o => o.value === rangeResult);
+                if (!exists) {
+                    setRangeResult(options[0].value);
+                }
+            }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [options]);
 
     
     
@@ -384,159 +424,6 @@ export function FingerMathSettingView() {
                                 
                 
             </Grid>  
-
-            {/* <Box sx={{ flexBasis: '50%', marginRight: 2 }}>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Số câu hỏi</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={numberQuestion}
-                        onChange={(e) => {
-                            SetNumberQuestion(e.target.value);
-                            setErrorMessages({ ...errorMessages, numberQuestion: '' }); // Xóa lỗi khi người dùng thay đổi
-                        }}
-                        label="Số câu hỏi"
-                    >
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={15}>15</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                    </Select>
-                    {errorMessages.numberQuestion && <Typography color="error">{errorMessages.numberQuestion}</Typography>}
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Thời gian mỗi phép tính (giây)</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={timePerCalculation}
-                        onChange={(e) => {
-                            setTimePerCalculation(e.target.value);
-                            setErrorMessages({ ...errorMessages, timePerCalculation: '' });
-                        }}
-                        label="Thời gian mỗi phép tính (giây)"
-                    >
-                        <MenuItem value={5}>5 giây</MenuItem>
-                        <MenuItem value={10}>10 giây</MenuItem>
-                        <MenuItem value={15}>15 giây</MenuItem>
-                        <MenuItem value={20}>20 giây</MenuItem>
-                    </Select>
-                    {errorMessages.timePerCalculation && <Typography color="error">{errorMessages.timePerCalculation}</Typography>}
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="level-label">Cấp độ cha</InputLabel>
-                    <Select
-                        labelId="level-label"
-                        value={levelParent.id}
-                        onChange={handleLevelParentChange}
-                        label="Cấp độ cha"
-                    >
-                        {levelParents.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>{item.value}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="level-label">Cấp độ con</InputLabel>
-                    <Select
-                        labelId="level-label"
-                        value={childId}
-                        onChange={handleLevelChildChange}
-                        label="Cấp độ con"
-                    >
-                        {levelChild.map((item) => (
-                            <MenuItem key={item.idChild} value={item.idChild}>{item.value}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Typography variant="h6" sx={{ marginTop: 2 }}>
-                    Phạm vi kết quả: {rangeResult}
-                </Typography>
-            </Box>
-
-            <Box sx={{ flexBasis: '50%', marginLeft: 2 }}>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Độ dài phép tính</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={calculationLength}
-                        onChange={(e) => SetCalculationLength(e.target.value)}
-                        label="Độ dài phép tính"
-                    >
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={15}>15</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                    </Select>
-                </FormControl>
-               
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-answer-label">Thời gian trả lời (giây)</InputLabel>
-                    <Select
-                        labelId="time-answer-label"
-                        value={timeAnswer}
-                        onChange={handleTimeAnswerChange}
-                        label="Thời gian trả lời (giây)"
-                    >
-                        <MenuItem value={5}>5 giây</MenuItem>
-                        <MenuItem value={10}>10 giây</MenuItem>
-                        <MenuItem value={15}>15 giây</MenuItem>
-                        <MenuItem value={20}>20 giây</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="first-number-label">Số hạng 1</InputLabel>
-                    <Select
-                        labelId="first-number-label"
-                        value={firstNumber}
-                        onChange={handleFirstNumberChange}
-                        label="Số hạng 1"
-                    >
-                        {[...Array(3).keys()].map((number) => (
-                            <MenuItem key={number + 1} value={number + 1}>
-                                {number + 1}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="second-number-label">Số hạng 2</InputLabel>
-                    <Select
-                        labelId="second-number-label"
-                        value={secondNumber}
-                        onChange={handleSecondNumberChange}
-                        label="Số hạng 2"
-                    >
-                        {[...Array(5).keys()].map((number) => (
-                            <MenuItem key={number + 1} value={number + 1}>
-                                {number + 1}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Box sx={{
-                    display: "flex", alignItems:"center", pt:"10px"
-                }}>
-                    <FormLabel component="legend">Cách hiện thị:</FormLabel>
-                </Box>
-                <Box margin="normal" sx={{display: "flex", alignItems:"center",}}>
-                    <RadioGroup
-                        row
-                        value={displayStyle}
-                        onChange={handleDisplayStyle}
-                    >
-                        <FormControlLabel value="1" control={<Radio />} label="Chữ số" />
-                        <FormControlLabel value="2" control={<Radio />} label="Hình bàn tay" />
-                    </RadioGroup>
-                </Box>
-                <Box>
-                    <Button variant="contained" color="primary" sx={{mt:2}} onClick={saveConfig}>
-                        Lưu thiết lập
-                    </Button>
-                    {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
-                </Box>
-            </Box> */}
         </Box>
     );
 }

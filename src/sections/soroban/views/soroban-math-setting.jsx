@@ -1,5 +1,5 @@
 // import React from 'react';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Box,
     Button,
@@ -32,23 +32,24 @@ const levelParents = [
 ];
 
 export function SorobanSettingView() {
+    // finger_math
     const profileLocalStorage = getProfileFromLS()
-    const congfigFingerMath = profileLocalStorage?.finger_math
-    const children = levelChilds.find(item => item.idParent === congfigFingerMath?.keyParent)?.children
-    const [parentId, setParentId] = React.useState(congfigFingerMath?.keyParent); // 
+    const congfigSorobanMath = profileLocalStorage?.soroban_math
+    const children = levelChilds.find(item => item.idParent === congfigSorobanMath?.keyParent)?.children
+    const [parentId, setParentId] = React.useState(congfigSorobanMath?.keyParent); // 
 
-    const [childId, setChildId] = React.useState(congfigFingerMath?.keyLesson); // 
+    const [childId, setChildId] = React.useState(congfigSorobanMath?.keyLesson); // 
     const [levelChild, setLevelChild] = React.useState(children)
   
-    const [numberQuestion, setNumberQuestion] = useState(congfigFingerMath?.numberQuestion) // số câu hỏi
-    const [calculationLength, setCalculationLength] = useState(congfigFingerMath?.calculationLength) // độ dài phép tính
-    const [timePerCalculation, setTimePerCalculation] = React.useState(congfigFingerMath?.timePerCalculation); // thời gian mỗi phép tính
-    const [timeAnswer, setTimeAnswer] = React.useState(congfigFingerMath?.timeAnswer); // thời gian trả lời
-    const [firstNumber, setFirstNumber] = React.useState(congfigFingerMath?.firstNumber); // số hạng thứ 1
-    const [secondNumber, setSecondNumber] = React.useState(congfigFingerMath?.secondNumber); // số hạng thứ 2
-    const [soundEnabled, setSoundEnabled] = React.useState(congfigFingerMath?.soundEnabled);
-    const [rangeResult, setRangeResult] = React.useState(congfigFingerMath?.rangeResult);
-    const [displayStyle, setDisplayStyle] = React.useState(congfigFingerMath?.displayStyle);
+    const [numberQuestion, setNumberQuestion] = useState(congfigSorobanMath?.numberQuestion) // số câu hỏi
+    const [calculationLength, setCalculationLength] = useState(congfigSorobanMath?.calculationLength) // độ dài phép tính
+    const [timePerCalculation, setTimePerCalculation] = React.useState(congfigSorobanMath?.timePerCalculation); // thời gian mỗi phép tính
+    const [timeAnswer, setTimeAnswer] = React.useState(congfigSorobanMath?.timeAnswer); // thời gian trả lời
+    const [firstNumber, setFirstNumber] = React.useState(congfigSorobanMath?.firstNumber); // số hạng thứ 1
+    const [secondNumber, setSecondNumber] = React.useState(congfigSorobanMath?.secondNumber); // số hạng thứ 2
+    const [soundEnabled, setSoundEnabled] = React.useState(congfigSorobanMath?.soundEnabled);
+    const [rangeResult, setRangeResult] = React.useState(congfigSorobanMath?.rangeResult);
+    const [displayStyle, setDisplayStyle] = React.useState(congfigSorobanMath?.displayStyle);
 
     const [formError, setFormError] = useState('');
     const [errorMessages, setErrorMessages] = useState({
@@ -83,22 +84,22 @@ export function SorobanSettingView() {
             }
         }
     }
-    const handleFirstNumberChange = (event) => {
-        setFirstNumber(event.target.value);
-        if(event.target.value === 1 && secondNumber === 1){
-            setRangeResult(4)
-        }else{
-            setRangeResult(44)
-        }
-    }
-    const handleSecondNumberChange = (event) => {
-        setSecondNumber(event.target.value);
-        if(event.target.value === 1 && firstNumber === 1){
-            setRangeResult(4)
-        }else{
-            setRangeResult(44)
-        }
-    }
+    // const handleFirstNumberChange = (event) => {
+    //     setFirstNumber(event.target.value);
+    //     if(event.target.value === 1 && secondNumber === 1){
+    //         setRangeResult(4)
+    //     }else{
+    //         setRangeResult(44)
+    //     }
+    // }
+    // const handleSecondNumberChange = (event) => {
+    //     setSecondNumber(event.target.value);
+    //     if(event.target.value === 1 && firstNumber === 1){
+    //         setRangeResult(4)
+    //     }else{
+    //         setRangeResult(44)
+    //     }
+    // }
     const handleDisplayStyle = (event) => {
         setDisplayStyle(event.target.value)
     }
@@ -145,9 +146,13 @@ export function SorobanSettingView() {
             isValid = false;
         }
 
+        
+
         setErrorMessages(newErrorMessages);
         if (isValid) {
             const param = {
+                mathTypeId: 2,
+                mathTypeName: "soroban",
                 numberQuestion,
                 calculationLength,
                 timePerCalculation,
@@ -162,11 +167,11 @@ export function SorobanSettingView() {
                 soundEnabled,
                 soundEnabledName: soundEnabled === 1 ? "Có" : soundEnabled === 0 ? "Không" : "",
                 keyParent: parentId,
-                keyParentName: levelParents.find(item => item.id === parentId)?.value,
+                valueParent: levelParents.find(item => item.id === parentId)?.value,
             };
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
-                        profileLocalStorage.finger_math = param;
+                        profileLocalStorage.soroban_math = param;
                         setProfileToLS(profileLocalStorage)
                         toast.success(response?.data?.message || 'Cập nhật cấu hình thành công', { duration: 2000 });
                     },
@@ -179,31 +184,48 @@ export function SorobanSettingView() {
     } 
 
     const options = useMemo(() => {
-    const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
+        const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
 
-    // Nếu idChild === 4 => chỉ 1 lựa chọn: '4' lặp max lần
-    if (childId === 4) {
-        const value = "4".repeat(max);
-        return [{ value, label: `${value}` }];
-    }
-    if(childId === 5 || childId === 6 || childId === 7 || childId === 8 || childId === 9){
-        const value = "9".repeat(max);
-        return [{ value, label: `${value}` }];
-    }
+        // Nếu idChild === 4 => chỉ 1 lựa chọn: '4' lặp max lần
+        if (childId === 4) {
+            const value = "4".repeat(max);
+            return [{ value, label: `${value}` }];
+        }
+        if(childId === 5 || childId === 6 || childId === 7 || childId === 8 || childId === 9){
+            const value = "9".repeat(max);
+            return [{ value, label: `${value}` }];
+        }
 
-    // Trường hợp bình thường
-    if (max === 1) {
-        return [{ value: "9", label: "1 chữ số (9)" }];
-    }
+        // Trường hợp bình thường
+        if (max === 1) {
+            return [{ value: "9", label: "1 chữ số (9)" }];
+        }
 
-    const firstValue = "9".repeat(max);
-    const secondValue = "9".repeat(max + 1);
+        const firstValue = "9".repeat(max);
+        const secondValue = "9".repeat(max + 1);
 
-    return [
-        { value: firstValue, label: `${firstValue}` },
-        { value: secondValue, label: `${secondValue}` },
-    ];
-  }, [firstNumber, secondNumber, childId]);
+        return [
+            { value: firstValue, label: `${firstValue}` },
+            { value: secondValue, label: `${secondValue}` },
+        ];
+    }, [firstNumber, secondNumber, childId]);
+
+    useEffect(() => {
+        if (options?.length > 0) {
+            // chỉ set lại nếu rangeResult chưa chọn hoặc không còn hợp lệ
+            const exists = options.some(o => o.value === rangeResult);
+            if (!exists) {
+                setRangeResult(options[0].value);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [options]);
+
+    
+
+    const handleChange = (e) => {
+        setRangeResult(e.target.value);
+    };
 
     
     
@@ -383,20 +405,20 @@ export function SorobanSettingView() {
                         <RadioGroup
                             row
                             value={rangeResult}
-                            onChange={(e) => setRangeResult(e.target.value)}
+                            onChange={handleChange}
                         >
                             {options.map((opt) => (
-                            <FormControlLabel
+                                <FormControlLabel
                                 key={opt.value}
                                 value={opt.value}
                                 control={<Radio />}
                                 label={opt.label}
-                            />
+                                />
                             ))}
                         </RadioGroup>
                         </Box>
                     </Box>
-                    </Grid>
+                </Grid>
 
                 <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
@@ -438,160 +460,7 @@ export function SorobanSettingView() {
                                 
                                 
                 
-            </Grid>  
-
-            {/* <Box sx={{ flexBasis: '50%', marginRight: 2 }}>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Số câu hỏi</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={numberQuestion}
-                        onChange={(e) => {
-                            SetNumberQuestion(e.target.value);
-                            setErrorMessages({ ...errorMessages, numberQuestion: '' }); // Xóa lỗi khi người dùng thay đổi
-                        }}
-                        label="Số câu hỏi"
-                    >
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={15}>15</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                    </Select>
-                    {errorMessages.numberQuestion && <Typography color="error">{errorMessages.numberQuestion}</Typography>}
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Thời gian mỗi phép tính (giây)</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={timePerCalculation}
-                        onChange={(e) => {
-                            setTimePerCalculation(e.target.value);
-                            setErrorMessages({ ...errorMessages, timePerCalculation: '' });
-                        }}
-                        label="Thời gian mỗi phép tính (giây)"
-                    >
-                        <MenuItem value={5}>5 giây</MenuItem>
-                        <MenuItem value={10}>10 giây</MenuItem>
-                        <MenuItem value={15}>15 giây</MenuItem>
-                        <MenuItem value={20}>20 giây</MenuItem>
-                    </Select>
-                    {errorMessages.timePerCalculation && <Typography color="error">{errorMessages.timePerCalculation}</Typography>}
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="level-label">Cấp độ cha</InputLabel>
-                    <Select
-                        labelId="level-label"
-                        value={levelParent.id}
-                        onChange={handleLevelParentChange}
-                        label="Cấp độ cha"
-                    >
-                        {levelParents.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>{item.value}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="level-label">Cấp độ con</InputLabel>
-                    <Select
-                        labelId="level-label"
-                        value={childId}
-                        onChange={handleLevelChildChange}
-                        label="Cấp độ con"
-                    >
-                        {levelChild.map((item) => (
-                            <MenuItem key={item.idChild} value={item.idChild}>{item.value}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Typography variant="h6" sx={{ marginTop: 2 }}>
-                    Phạm vi kết quả: {rangeResult}
-                </Typography>
-            </Box>
-
-            <Box sx={{ flexBasis: '50%', marginLeft: 2 }}>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-label">Độ dài phép tính</InputLabel>
-                    <Select
-                        labelId="time-label"
-                        value={calculationLength}
-                        onChange={(e) => SetCalculationLength(e.target.value)}
-                        label="Độ dài phép tính"
-                    >
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={15}>15</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                    </Select>
-                </FormControl>
-               
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="time-answer-label">Thời gian trả lời (giây)</InputLabel>
-                    <Select
-                        labelId="time-answer-label"
-                        value={timeAnswer}
-                        onChange={handleTimeAnswerChange}
-                        label="Thời gian trả lời (giây)"
-                    >
-                        <MenuItem value={5}>5 giây</MenuItem>
-                        <MenuItem value={10}>10 giây</MenuItem>
-                        <MenuItem value={15}>15 giây</MenuItem>
-                        <MenuItem value={20}>20 giây</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="first-number-label">Số hạng 1</InputLabel>
-                    <Select
-                        labelId="first-number-label"
-                        value={firstNumber}
-                        onChange={handleFirstNumberChange}
-                        label="Số hạng 1"
-                    >
-                        {[...Array(3).keys()].map((number) => (
-                            <MenuItem key={number + 1} value={number + 1}>
-                                {number + 1}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="second-number-label">Số hạng 2</InputLabel>
-                    <Select
-                        labelId="second-number-label"
-                        value={secondNumber}
-                        onChange={handleSecondNumberChange}
-                        label="Số hạng 2"
-                    >
-                        {[...Array(5).keys()].map((number) => (
-                            <MenuItem key={number + 1} value={number + 1}>
-                                {number + 1}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Box sx={{
-                    display: "flex", alignItems:"center", pt:"10px"
-                }}>
-                    <FormLabel component="legend">Cách hiện thị:</FormLabel>
-                </Box>
-                <Box margin="normal" sx={{display: "flex", alignItems:"center",}}>
-                    <RadioGroup
-                        row
-                        value={displayStyle}
-                        onChange={handleDisplayStyle}
-                    >
-                        <FormControlLabel value="1" control={<Radio />} label="Chữ số" />
-                        <FormControlLabel value="2" control={<Radio />} label="Hình bàn tay" />
-                    </RadioGroup>
-                </Box>
-                <Box>
-                    <Button variant="contained" color="primary" sx={{mt:2}} onClick={saveConfig}>
-                        Lưu thiết lập
-                    </Button>
-                    {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
-                </Box>
-            </Box> */}
+            </Grid> 
         </Box>
     );
 }

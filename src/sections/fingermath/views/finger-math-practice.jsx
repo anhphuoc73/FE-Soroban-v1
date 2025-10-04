@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import { ConfigMathApi } from 'src/apis/configMath-api';
 import { Iconify } from 'src/components/iconify';
-import { Timer } from './timer-test';
+import { Timer } from './timer';
 
 import { ShowCaculator } from '../../../components/math/show-caculator';
 import { ResultMathView } from '../../../components/math/result';
@@ -105,7 +105,24 @@ export function FingerMathPracticeView() {
         
     }
 
-    
+    const playClapSound = () => {
+        const clapSounds = [
+            "/sound/correct/1.mp3",
+            "/sound/correct/2.mp3",
+        ];
+
+        // 🎲 Chọn ngẫu nhiên 1 file trong mảng
+        const randomIndex = Math.floor(Math.random() * clapSounds.length);
+        const filePath = clapSounds[randomIndex];
+
+        // 🎧 Phát âm thanh
+        const audio = new Audio(filePath);
+        audio.playbackRate = 2.0; // tốc độ phát nhanh gấp đôi
+
+        audio.play().catch((err) => {
+            console.error("Không phát được âm thanh:", err);
+        });
+    };
     const handleEqual = () => {
         let logFingerMath = []
         logFingerMath = getItem("logFingerMath")
@@ -122,7 +139,7 @@ export function FingerMathPracticeView() {
                     }
                     return item;
                 });
-
+                playClapSound()
                 console.log("Nhập kết quả đúng");
             }else{
                 logFingerMath = logFingerMath.map(item => {
