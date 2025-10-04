@@ -48,8 +48,8 @@ export function JwtSignInView() {
   const password = useBoolean();
   const [errorLabel, setErrorLabel] = useState('');
   const defaultValues = {
-    username: isProduction() ? '' : '0902312242',
-    password: isProduction() ? '' : '0902312242',
+    username:  '' ,
+    password:  '' ,
   };
 
   const methods = useForm({
