@@ -4,33 +4,33 @@ import { Box, Typography } from "@mui/material";
 
 export default function ShowCalculatorInterval({ showNumber, timePerCalculation }) {
   useEffect(() => {
-let audio;
+    let audio;
 
-if (showNumber !== undefined && showNumber !== null && showNumber !== "") {
-  const filePath =
-    timePerCalculation >= 1000
-      ? `/number/${showNumber}.mp3`
-      : `/number/tit.mp3`;
+    if (showNumber !== undefined && showNumber !== null && showNumber !== "") {
+      const filePath =
+        timePerCalculation >= 1000
+          ? `/number/${showNumber}.mp3`
+          : `/number/tit.mp3`;
 
-  const audio = new Audio(filePath);
+      const audio = new Audio(filePath);
 
-  // Nếu là số thì phát nhanh gấp đôi
-  if (timePerCalculation >= 1000) {
-    audio.playbackRate = 2.0;
-  }
+      // Nếu là số thì phát nhanh gấp đôi
+      if (timePerCalculation < 1000) {
+        audio.playbackRate = 2.0;
+      }
 
-  audio.play().catch((err) => {
-    console.error("Không phát được âm thanh:", err);
-  });
-}
+      audio.play().catch((err) => {
+        console.error("Không phát được âm thanh:", err);
+      });
+    }
 
 
-return () => {
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
-  }
-};
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
 }, [showNumber, timePerCalculation]);
 
 

@@ -18,6 +18,7 @@ export function Timer({initialTime, setInitialTime, equal, setEqual, start, setS
             return () => clearInterval(timmerId); 
         }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [equal, initialTime]);
 
    
