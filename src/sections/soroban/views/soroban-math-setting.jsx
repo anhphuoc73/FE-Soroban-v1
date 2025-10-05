@@ -50,6 +50,7 @@ export function SorobanSettingView() {
     const [soundEnabled, setSoundEnabled] = React.useState(congfigSorobanMath?.soundEnabled);
     const [rangeResult, setRangeResult] = React.useState(congfigSorobanMath?.rangeResult);
     const [displayStyle, setDisplayStyle] = React.useState(congfigSorobanMath?.displayStyle);
+    const [allowExceed, setAllowExceed] = React.useState(congfigSorobanMath?.allowExceed);
 
     const [formError, setFormError] = useState('');
     const [errorMessages, setErrorMessages] = useState({
@@ -168,7 +169,9 @@ export function SorobanSettingView() {
                 soundEnabledName: soundEnabled === 1 ? "Có" : soundEnabled === 0 ? "Không" : "",
                 keyParent: parentId,
                 valueParent: levelParents.find(item => item.id === parentId)?.value,
+                allowExceed
             };
+           
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.soroban_math = param;
@@ -198,7 +201,7 @@ export function SorobanSettingView() {
 
         // Trường hợp bình thường
         if (max === 1) {
-            return [{ value: "9", label: "1 chữ số (9)" }];
+            return [{ value: "9", label: "9" }];
         }
 
         const firstValue = "9".repeat(max);
@@ -220,6 +223,53 @@ export function SorobanSettingView() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [options]);
+
+    useEffect(() => {
+    // Nếu chưa có childId thì bỏ qua
+        if (!childId) return;
+
+        const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
+        let newRangeResult = rangeResult; // giữ giá trị cũ nếu không thay đổi
+
+        // Trường hợp đặc biệt: idChild === 4
+        if (childId === 4) {
+            newRangeResult = "4".repeat(max);
+        }
+        // Trường hợp idChild === 5 → 9
+        else if ([5, 6, 7, 8, 9].includes(childId)) {
+            newRangeResult = "9".repeat(max);
+        }
+
+        // Nếu giá trị mới khác với hiện tại thì cập nhật
+        if (newRangeResult !== rangeResult) {
+            setRangeResult(newRangeResult);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [firstNumber, secondNumber, childId]);
+
+    useEffect(() => {
+        if (!rangeResult || !options?.length) return;
+
+        // Nếu chỉ có 1 lựa chọn => luôn là 0
+        if (options.length === 1) {
+            setAllowExceed(0);
+            return;
+        }
+
+        // Tìm độ dài lớn nhất / nhỏ nhất trong danh sách options
+        const maxLength = Math.max(...options.map(o => o.value.length));
+        const minLength = Math.min(...options.map(o => o.value.length));
+
+        // Nếu người dùng chọn giá trị có độ dài lớn nhất => 1
+        if (rangeResult.length === maxLength) {
+            setAllowExceed(1);
+        } 
+        // Nếu chọn giá trị ngắn hơn => 0
+        else if (rangeResult.length === minLength) {
+            setAllowExceed(0);
+        }
+    }, [rangeResult, options]);
+
 
     
 

@@ -6,16 +6,17 @@ import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { paths } from 'src/routes/paths.js';
-import { useRouter, usePathname } from 'src/routes/hooks/index.js';
-import { varAlpha } from 'src/theme/styles/index.js';
-import { Label } from 'src/components/label/index.js';
-import { Iconify } from 'src/components/iconify/index.js';
-import { Scrollbar } from 'src/components/scrollbar/index.js';
-import { AnimateAvatar } from 'src/components/animate/index.js';
-import { useMockedUser } from 'src/auth/hooks/index.js';
-import { AccountButton } from './account-button.jsx';
-import { SignOutButton } from './sign-out-button.jsx';
+import { paths } from 'src/routes/paths';
+import { useRouter, usePathname } from 'src/routes/hooks/index';
+import { varAlpha } from 'src/theme/styles/index';
+import { Label } from 'src/components/label/index';
+import { Iconify } from 'src/components/iconify/index';
+import { Scrollbar } from 'src/components/scrollbar/index';
+import { AnimateAvatar } from 'src/components/animate/index';
+import { useMockedUser } from 'src/auth/hooks/index';
+import { AccountButton } from './account-button';
+import { SignOutButton } from './sign-out-button';
+import { getProfileFromLS } from '../utils/auth';
 
 // ----------------------------------------------------------------------
 
@@ -62,6 +63,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
     </AnimateAvatar>
   );
 
+  const profileLocalStorage = getProfileFromLS()
+  
   return (
     <>
       <AccountButton
@@ -89,42 +92,10 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         <Scrollbar>
           <Stack alignItems="center" sx={{ pt: 8 }}>
             {renderAvatar}
-
-            <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {user?.displayName}
-            </Typography>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
-              {user?.email}
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, textTransform: 'uppercase' }} noWrap>
+              {profileLocalStorage?.fullname}
             </Typography>
           </Stack>
-
-          {/* <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center" sx={{ p: 3 }}>
-            {[...Array(3)].map((_, index) => (
-              <Tooltip
-                key={_mock.fullName(index + 1)}
-                title={`Switch to: ${_mock.fullName(index + 1)}`}
-              >
-                <Avatar
-                  alt={_mock.fullName(index + 1)}
-                  src={_mock.image.avatar(index + 1)}
-                  onClick={() => {}}
-                />
-              </Tooltip>
-            ))}
-
-            <Tooltip title="Add account">
-              <IconButton
-                sx={{
-                  bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-                  border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.32)}`,
-                }}
-              >
-                <Iconify icon="mingcute:add-line" />
-              </IconButton>
-            </Tooltip>
-          </Stack> */}
-
           <Stack
             sx={{
               py: 3,
@@ -164,10 +135,6 @@ export function AccountDrawer({ data = [], sx, ...other }) {
               );
             })}
           </Stack>
-
-          {/* <Box sx={{ px: 2.5, py: 3 }}>
-            <UpgradeBlock />
-          </Box> */}
         </Scrollbar>
 
         <Box sx={{ p: 2.5 }}>

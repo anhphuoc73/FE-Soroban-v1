@@ -66,7 +66,14 @@ export function SorobanPracticeView() {
     
 
     const handleCreateCalculation = () => {
-        const param = []
+        const allowExceed = congfigSorobanMath?.allowExceed === 1 ? "yes" : congfigSorobanMath?.allowExceed === 0 ? "no": "no";
+        const param = {
+            "count": congfigSorobanMath?.calculationLength, 
+            "main": congfigSorobanMath?.keyLesson, 
+            "digits1": congfigSorobanMath?.firstNumber, 
+            "digits2": congfigSorobanMath?.firstNumber, 
+            "allowExceed": allowExceed
+        }
         createPacticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression 
@@ -243,12 +250,6 @@ export function SorobanPracticeView() {
         } 
     }, [numberQuestion]);
 
-
-    
-
-
-
-   
 
     useEffect(() => {
         if (showNumber !== '') {

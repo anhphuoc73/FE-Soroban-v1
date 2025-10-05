@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Box, TextField, IconButton } from "@mui/material";
+import { Box, TextField, IconButton, Tooltip } from "@mui/material";
 import { Iconify } from "../iconify"; // tuỳ đường dẫn của bạn
 
 export default function ActionMath({
@@ -54,25 +54,37 @@ export default function ActionMath({
 
       {/* Nhóm 3 nút nằm trên 1 hàng */}
       <Box display="flex" gap={2}>
-        <IconButton onClick={handleEqual} disabled={equal}>
-          <Iconify
-            width={50}
-            icon="akar-icons:equal"
-            color={equal ? "action.disabled" : "success.dark"} 
-          />
-        </IconButton>
+        <Tooltip title="Trả lời" arrow>
+          <span>
+            <IconButton onClick={handleEqual} disabled={equal}>
+              <Iconify
+                width={50}
+                icon="akar-icons:equal"
+                color={equal ? "action.disabled" : "success.dark"}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
 
-        <IconButton onClick={handleCreateCalculation} disabled={start}>
-          <Iconify
-            width={50}
-            icon="carbon:next-outline"
-            color={start ? "action.disabled" : "success.dark"}
-          />
-        </IconButton>
+        <Tooltip title="Bắt đầu" arrow>
+          <span>
+            <IconButton onClick={handleCreateCalculation} disabled={start}>
+              <Iconify
+                width={50}
+                icon="carbon:next-outline"
+                color={start ? "action.disabled" : "success.dark"}
+              />
+            </IconButton>
+          </span>
+        </Tooltip>
 
-        <IconButton onClick={handleNoti}>
-          <Iconify width={50} color="success.dark" icon="mynaui:notification-solid" />
-        </IconButton>
+        <Tooltip title="Chi tiết phép tính" arrow>
+          <span>
+            <IconButton onClick={handleNoti}>
+              <Iconify width={50} color="success.dark" icon="mynaui:notification-solid" />
+            </IconButton>
+          </span>
+        </Tooltip>
       </Box>
     </Box>
   );

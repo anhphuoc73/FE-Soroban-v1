@@ -55,6 +55,7 @@ export const endpoints = {
     addUser: `${CONFIG.serverUrl}/user`,
     listUser: `${CONFIG.serverUrl}/user`,
     updateUser: `${CONFIG.serverUrl}/user`,
+    updatePassword: `${CONFIG.serverUrl}/user/update-password`,
     deleteUser: `${CONFIG.serverUrl}/user`,
     getListUserCenter: `${CONFIG.serverUrl}/user/get-list-user-center`,
     getListUserTeacher: `${CONFIG.serverUrl}/user/get-list-user-teacher`,

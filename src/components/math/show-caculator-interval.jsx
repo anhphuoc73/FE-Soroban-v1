@@ -3,35 +3,73 @@ import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 export default function ShowCalculatorInterval({ showNumber, timePerCalculation }) {
+  // useEffect(() => {
+  //   let audio;
+
+  //   if (showNumber !== undefined && showNumber !== null && showNumber !== "") {
+  //     const filePath =
+  //       timePerCalculation >= 1000
+  //         ? `/number/${showNumber}.mp3`
+  //         : `/number/tit.mp3`;
+
+  //     const audio = new Audio(filePath);
+
+  //     // Nếu là số thì phát nhanh gấp đôi
+  //     if (timePerCalculation < 1000) {
+  //       audio.playbackRate = 2.0;
+  //     }
+
+  //     audio.play().catch((err) => {
+  //       console.error("Không phát được âm thanh:", err);
+  //     });
+  //   }
+
+
+  //   return () => {
+  //     if (audio) {
+  //       audio.pause();
+  //       audio.currentTime = 0;
+  //     }
+  //   };
+  // }, [showNumber, timePerCalculation]);
+
+
   useEffect(() => {
-    let audio;
+    if (!showNumber) return;
 
-    if (showNumber !== undefined && showNumber !== null && showNumber !== "") {
-      const filePath =
-        timePerCalculation >= 1000
-          ? `/number/${showNumber}.mp3`
-          : `/number/tit.mp3`;
+    const numberFile = `/number/${showNumber}.mp3`;
+    const defaultFile = `/number/tit.mp3`;
 
-      const audio = new Audio(filePath);
+    // Kiểm tra file số có tồn tại
+    fetch(numberFile, { method: "HEAD" })
+      .then((res) => {
+        const fileToPlay = res.ok ? numberFile : defaultFile;
+        const audio = new Audio(fileToPlay);
 
-      // Nếu là số thì phát nhanh gấp đôi
-      if (timePerCalculation < 1000) {
-        audio.playbackRate = 2.0;
-      }
+        // Nếu timePerCalculation < 1000, phát nhanh gấp đôi
+        if (timePerCalculation < 1000) {
+          audio.playbackRate = 2.0;
+        }
 
-      audio.play().catch((err) => {
-        console.error("Không phát được âm thanh:", err);
+        audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+
+        // Dừng audio khi component unmount hoặc thay đổi showNumber
+        return () => {
+          audio.pause();
+          audio.currentTime = 0;
+        };
+      })
+      .catch((err) => {
+        console.error("Lỗi kiểm tra file:", err);
+        const audio = new Audio(defaultFile);
+        audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+        return () => {
+          audio.pause();
+          audio.currentTime = 0;
+        };
       });
-    }
+    }, [showNumber, timePerCalculation]);
 
-
-    return () => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    };
-}, [showNumber, timePerCalculation]);
 
 
   return (
