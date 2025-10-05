@@ -10,6 +10,7 @@ export const removeLS = () => {
   localStorage.removeItem('profile');
   localStorage.removeItem('role_list');
   localStorage.removeItem('logFingerMath');
+  localStorage.removeItem('logSorobanMath');
 
   const clearLSEvent = new Event('removeLS');
   LocalStorageEventTarget.dispatchEvent(clearLSEvent);

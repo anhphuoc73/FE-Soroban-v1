@@ -21,6 +21,10 @@ export const UserApi = {
   updateUser(body) {
     return http.put(`${endpoints.user.updateUser}`, body);
   },
+  updatePassword(body) {
+    return http.put(`${endpoints.user.updatePassword}`, body);
+  },
+  
   deleteUser(body) {
     return http.delete(`${endpoints.user.deleteUser}`,  { data: body });
   },

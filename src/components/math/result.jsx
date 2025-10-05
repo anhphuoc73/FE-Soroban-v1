@@ -28,7 +28,6 @@ export function ResultMathView({ numberQuestion, logMath }) {
 useEffect(() => {
   const newResultArray = Array.from({ length: numberQuestion }).reduce((acc, _, i) => {
     const item = logMath[i];
-    console.log("iiiiiiiiii", i)
 
     if (!item) {
       acc.push(2); // chưa làm

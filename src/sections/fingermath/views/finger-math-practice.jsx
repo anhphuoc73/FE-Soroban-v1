@@ -65,7 +65,13 @@ export function FingerMathPracticeView() {
     
 
     const handleCreateCalculation = () => {
-        const param = []
+        const param = {
+            "count": congfigFingerMath?.calculationLength, 
+            "main": congfigFingerMath?.keyLesson, 
+            "digits1": congfigFingerMath?.firstNumber, 
+            "digits2": congfigFingerMath?.firstNumber, 
+            "allowExceed": "no" 
+        }
         createPacticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression 
@@ -242,12 +248,6 @@ export function FingerMathPracticeView() {
         } 
     }, [numberQuestion]);
 
-
-    
-
-
-
-   
 
     useEffect(() => {
         if (showNumber !== '') {
