@@ -20,6 +20,7 @@ import { ConfigMathApi } from 'src/apis/configMath-api';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { getProfileFromLS, setProfileToLS } from 'src/utils/auth';
+import MathPDFDrawer from 'src/components/math/math-pdf-drawer';
 
 const levelParents = [
     { id: 1, value: "Không công thức" },
@@ -32,6 +33,23 @@ const levelParents = [
 ];
 
 export function FingerMathSettingView() {
+    const exercises = [
+        ["17", "+1", "+12", "-3"],
+        ["2", "-1", "+3", "+6"],
+        ["9", "-2", "+5", "-4"],
+        ["1", "+9", "-5", "+2"],
+        ["8", "-3", "-2", "+1"],
+        ["7", "+1", "+2", "-3"],
+        ["2", "-1", "+3", "+6"],
+        ["9", "-2", "+5", "-4"],
+        ["1", "+9", "-5", "+2"],
+        ["8", "-3", "-2", "+1"],
+        ["7", "+1", "+2", "-3"],
+        ["2", "-1", "+3", "+6"],
+        ["9", "-2", "+5", "-4"],
+        ["1", "+9", "-5", "+2"],
+        ["8", "-3", "-2", "+1"],
+    ];
     const profileLocalStorage = getProfileFromLS()
     const congfigFingerMath = profileLocalStorage?.finger_math
     const children = levelChilds.find(item => item.idParent === congfigFingerMath?.keyParent)?.children
@@ -52,6 +70,8 @@ export function FingerMathSettingView() {
     const [soundEnabled, setSoundEnabled] = React.useState(congfigFingerMath?.soundEnabled);
     const [rangeResult, setRangeResult] = React.useState(congfigFingerMath?.rangeResult);
     const [displayStyle, setDisplayStyle] = React.useState(congfigFingerMath?.displayStyle);
+
+    const [openPDFDrawer, setOpenPDFDrawer] = useState(false);
 
     const [formError, setFormError] = useState('');
     const [errorMessages, setErrorMessages] = useState({
@@ -403,7 +423,7 @@ export function FingerMathSettingView() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
                         <Box>
                             <Button variant="contained" color="primary" sx={{mt:2}} onClick={saveConfig}>
@@ -411,17 +431,58 @@ export function FingerMathSettingView() {
                             </Button>
                             {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
                         </Box>
+                        <Box>
+                            <Button
+                                variant="contained"
+                                sx={{ backgroundColor: "#1976d2" }}
+                                onClick={() => setOpenPDFDrawer(true)}
+                            >
+                                📘 Tạo đề
+                            </Button>
+                            <MathPDFDrawer open={openPDFDrawer} onClose={() => setOpenPDFDrawer(false)} exercises={exercises} />
+                            {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
+                        </Box>
                     </Box>
-                </Grid>
+                    
+                </Grid> */}
 
-                
+                <Grid item xs={12} md={6}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
+                        {/* Nút Lưu thiết lập */}
+                        <Box sx={{ minWidth: 120 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={saveConfig}
+                            fullWidth
+                        >
+                            Lưu thiết lập
+                        </Button>
+                        {formError && (
+                            <Typography color="error" sx={{ mt: 1 }}>
+                            {formError}
+                            </Typography>
+                        )}
+                        </Box>
 
-                
-                
-                
-
-                                
-                                
+                        {/* Nút Tạo đề */}
+                        <Box sx={{ minWidth: 120 }}>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: "#1976d2" }}
+                            onClick={() => setOpenPDFDrawer(true)}
+                            fullWidth
+                        >
+                            Tạo đề
+                        </Button>
+                        <MathPDFDrawer
+                            open={openPDFDrawer}
+                            onClose={() => setOpenPDFDrawer(false)}
+                            exercises={exercises}
+                        />
+                        </Box>
+                    </Box>
+                </Grid>          
                 
             </Grid>  
         </Box>
