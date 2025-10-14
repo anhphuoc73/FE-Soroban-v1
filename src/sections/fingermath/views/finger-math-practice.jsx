@@ -14,6 +14,7 @@ import ActionMath from '../../../components/math/action-math';
 import ShowCalculatorInterval from '../../../components/math/show-caculator-interval';
 import { ensureItem, getItem, setItem } from '../../../utils/localStorage';
 import { ResultDrawer } from '../../../components/math/result-drawer';
+import { Anime } from '../../../components/math/anime';
 // import { use } from 'react';
 
 
@@ -46,6 +47,8 @@ export function FingerMathPracticeView() {
     const [open, setOpen] = useState(false);
     const [stringNumber, setStringNumber] = useState("")
 
+    const [showAnime, setShowAnime] = useState(false);
+
     const [openResultDrawer, setOpenResultDrawer] = useState(false);
     const [resultSummary, setResultSummary] = useState({
         total: 0,
@@ -54,11 +57,11 @@ export function FingerMathPracticeView() {
     });
 
     const createPacticeFingerMathMutation = useMutation({
-        mutationFn: ConfigMathApi.createPacticeFingerMath
+        mutationFn: ConfigMathApi.createPracticeFingerMath
     })
 
     const savePacticeFingerMathMutation = useMutation({
-        mutationFn: ConfigMathApi.savePacticeFingerMath
+        mutationFn: ConfigMathApi.savePracticeFingerMath
     })
 
 //   console.log("idMath", idMath)
@@ -128,6 +131,10 @@ export function FingerMathPracticeView() {
         audio.play().catch((err) => {
             console.error("Không phát được âm thanh:", err);
         });
+        setShowAnime(true);
+        setTimeout(() => {
+            setShowAnime(false);
+        }, 10000);
     };
     const handleEqual = () => {
         let logFingerMath = []
@@ -174,8 +181,6 @@ export function FingerMathPracticeView() {
                 // setLogMath(math)
                 savePacticeFingerMathMutation.mutate({...math},{
                         onSuccess: (response) => {
-                            
-
                             setResultSummary({
                                 total: math.length,
                                 correct: math.filter(item => item.result === 1).length,
@@ -314,14 +319,60 @@ export function FingerMathPracticeView() {
                         start={start}
                     />
                 </Box>
-                <Box sx={{
-                    position:"absolute",
-                    left: { xs: 120, md: 200 }, // mobile (xs) thì 50, desktop (md) thì 200
-                    top: { xs: 180, md: 200 },  // mobile thì 50, desktop thì 200
-                    
-                }}>
-                    <Timer initialTime={initialTime} setInitialTime={setInitialTime} equal={equal} setEqual={setEqual} start={start} setStart={setStart} />
+
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: { xs: 120, md: 200 },
+                        top: { xs: 180, md: 200 },
+                    }}
+                    >
+                    <Timer
+                        initialTime={initialTime}
+                        setInitialTime={setInitialTime}
+                        equal={equal}
+                        setEqual={setEqual}
+                        start={start}
+                        setStart={setStart}
+                    />
                 </Box>
+                {showAnime && (
+                    <Box
+                    sx={{
+                        position: "absolute",
+                        bottom: "30%",
+                        left: "20%",
+                        transform: "translateX(-20%)",
+                        opacity: 0,
+                        animation: "fadeZoom 5s ease-in-out forwards", // tổng thời gian 5s
+                        "@keyframes fadeZoom": {
+                        "0%": {
+                            opacity: 0,
+                            transform: "translateY(30px) scale(0.5)", // nhỏ và mờ, từ dưới đi lên
+                        },
+                        "20%": {
+                            opacity: 1,
+                            transform: "translateY(0) scale(1.1)", // rõ và phóng to nhẹ
+                        },
+                        "50%": {
+                            opacity: 1,
+                            transform: "translateY(0) scale(1)", // đứng yên một lúc
+                        },
+                        "80%": {
+                            opacity: 0.6,
+                            transform: "translateY(-10px) scale(0.9)", // bắt đầu nhỏ lại
+                        },
+                        "100%": {
+                            opacity: 0,
+                            transform: "translateY(-20px) scale(0.7)", // nhỏ dần rồi biến mất
+                        },
+                        },
+                    }}
+                    >
+                        <Anime />
+                    </Box>
+                )}
+                
             </Box> 
 
            

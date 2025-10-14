@@ -40,6 +40,7 @@ export const endpoints = {
   configMath : {
     fingerMath: `${CONFIG.serverUrl}/configMath/config-finger-math`,
     createPracticeFingerMath: `${CONFIG.serverUrl}/configMath/practice-finger-math`,
+    createPracticeFingerMathList: `${CONFIG.serverUrl}/configMath/practice-finger-math-list`,
     savePracticeFingerMath: `${CONFIG.serverUrl}/configMath/save-practice-finger-math`,
     
   },
