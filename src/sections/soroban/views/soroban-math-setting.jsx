@@ -33,23 +33,7 @@ const levelParents = [
 ];
 
 export function SorobanSettingView() {
-    const exercises = [
-        ["17", "+1", "+12", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-        ["7", "+1", "+2", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-        ["7", "+1", "+2", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-    ];
+    const [exercises, setExercises] = useState([]);
     // finger_math
     const profileLocalStorage = getProfileFromLS()
     const congfigSorobanMath = profileLocalStorage?.soroban_math
@@ -104,22 +88,7 @@ export function SorobanSettingView() {
             }
         }
     }
-    // const handleFirstNumberChange = (event) => {
-    //     setFirstNumber(event.target.value);
-    //     if(event.target.value === 1 && secondNumber === 1){
-    //         setRangeResult(4)
-    //     }else{
-    //         setRangeResult(44)
-    //     }
-    // }
-    // const handleSecondNumberChange = (event) => {
-    //     setSecondNumber(event.target.value);
-    //     if(event.target.value === 1 && firstNumber === 1){
-    //         setRangeResult(4)
-    //     }else{
-    //         setRangeResult(44)
-    //     }
-    // }
+    
     const handleDisplayStyle = (event) => {
         setDisplayStyle(event.target.value)
     }
@@ -128,6 +97,27 @@ export function SorobanSettingView() {
     const updateConfigMathMutation = useMutation({
         mutationFn: ConfigMathApi.updateConfigFingerMath
     })
+
+    const createConfigMathListMutation = useMutation({
+        mutationFn: ConfigMathApi.createPracticeFingerMathList,
+        onSuccess: (data) => {
+            const param = data?.data?.metadata
+            setExercises(param);
+        },
+    });
+    useEffect(() => {
+        if (openPDFDrawer) {
+            createConfigMathListMutation.mutate({
+                count: congfigSorobanMath?.calculationLength,
+                main: congfigSorobanMath?.keyLesson,
+                digits1:congfigSorobanMath?.firstNumber,
+                digits2: congfigSorobanMath?.secondNumber,
+                allowExceed: congfigSorobanMath?.allowExceed === 1 ? "yes" : "no",
+                number: congfigSorobanMath?.numberQuestion,
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openPDFDrawer]);
 
     const saveConfig = () => {
         const newErrorMessages = {
@@ -521,52 +511,42 @@ export function SorobanSettingView() {
                 </Grid> */}
 
                 <Grid item xs={12} md={6}>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
-                                        {/* Nút Lưu thiết lập */}
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={saveConfig}
-                                            fullWidth
-                                        >
-                                            Lưu thiết lập
-                                        </Button>
-                                        {formError && (
-                                            <Typography color="error" sx={{ mt: 1 }}>
-                                            {formError}
-                                            </Typography>
-                                        )}
-                                        </Box>
-                
-                                        {/* Nút Tạo đề */}
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <Button
-                                            variant="contained"
-                                            sx={{ backgroundColor: "#1976d2" }}
-                                            onClick={() => setOpenPDFDrawer(true)}
-                                            fullWidth
-                                        >
-                                            Tạo đề
-                                        </Button>
-                                        <MathPDFDrawer
-                                            open={openPDFDrawer}
-                                            onClose={() => setOpenPDFDrawer(false)}
-                                            exercises={exercises}
-                                        />
-                                        </Box>
-                                    </Box>
-                                </Grid>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
+                        {/* Nút Lưu thiết lập */}
+                        <Box sx={{ minWidth: 120 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={saveConfig}
+                            fullWidth
+                        >
+                            Lưu thiết lập
+                        </Button>
+                        {formError && (
+                            <Typography color="error" sx={{ mt: 1 }}>
+                            {formError}
+                            </Typography>
+                        )}
+                        </Box>
 
-                
-
-                
-                
-                
-
-                                
-                                
-                
+                        {/* Nút Tạo đề */}
+                        <Box sx={{ minWidth: 120 }}>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: "#1976d2" }}
+                            onClick={() => setOpenPDFDrawer(true)}
+                            fullWidth
+                        >
+                            Tạo đề
+                        </Button>
+                        <MathPDFDrawer
+                            open={openPDFDrawer}
+                            onClose={() => setOpenPDFDrawer(false)}
+                            exercises={exercises}
+                        />
+                        </Box>
+                    </Box>
+                </Grid>
             </Grid> 
         </Box>
     );

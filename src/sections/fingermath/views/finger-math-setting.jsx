@@ -33,23 +33,7 @@ const levelParents = [
 ];
 
 export function FingerMathSettingView() {
-    const exercises = [
-        ["17", "+1", "+12", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-        ["7", "+1", "+2", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-        ["7", "+1", "+2", "-3"],
-        ["2", "-1", "+3", "+6"],
-        ["9", "-2", "+5", "-4"],
-        ["1", "+9", "-5", "+2"],
-        ["8", "-3", "-2", "+1"],
-    ];
+    const [exercises, setExercises] = useState([]);
     const profileLocalStorage = getProfileFromLS()
     const congfigFingerMath = profileLocalStorage?.finger_math
     const children = levelChilds.find(item => item.idParent === congfigFingerMath?.keyParent)?.children
@@ -58,8 +42,6 @@ export function FingerMathSettingView() {
     const [childId, setChildId] = React.useState(congfigFingerMath?.keyLesson); // 
     const [levelChild, setLevelChild] = React.useState(children)
   
-
-    
     const [numberQuestion, setNumberQuestion] = useState(congfigFingerMath?.numberQuestion) // số câu hỏi
     
     const [calculationLength, setCalculationLength] = useState(congfigFingerMath?.calculationLength) // độ dài phép tính
@@ -125,12 +107,32 @@ export function FingerMathSettingView() {
     const handleDisplayStyle = (event) => {
         setDisplayStyle(event.target.value)
     }
-  
 
     const updateConfigMathMutation = useMutation({
         mutationFn: ConfigMathApi.updateConfigFingerMath
     })
 
+    const createConfigMathListMutation = useMutation({
+        mutationFn: ConfigMathApi.createPracticeFingerMathList,
+        onSuccess: (data) => {
+            const param = data?.data?.metadata
+            setExercises(param);
+        },
+    });
+    useEffect(() => {
+        if (openPDFDrawer) {
+            createConfigMathListMutation.mutate({
+                count: congfigFingerMath?.calculationLength,
+                main: congfigFingerMath?.keyLesson,
+                digits1:congfigFingerMath?.firstNumber,
+                digits2: congfigFingerMath?.secondNumber,
+                allowExceed: "yes",
+                number: congfigFingerMath?.numberQuestion,
+            }); // Gọi API khi Drawer mở
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openPDFDrawer]);
+    
     const saveConfig = () => {
         const newErrorMessages = {
             numberQuestion: '',

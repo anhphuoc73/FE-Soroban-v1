@@ -5,26 +5,6 @@ import { Iconify } from "../iconify";
 export function ResultMathView({ numberQuestion, logMath }) {
   const [resultArray, setResultArray] = useState([]);
 
-  // useEffect(() => {
-  //   const newResultArray = Array.from({ length: numberQuestion }, (_, i) => {
-  //     const item = logMath[i];
-  //     if (!item) return 2; // chưa có object → chưa làm
-
-  //     if (item.result === 1) return 1;
-  //     if (item.result === 0) return 0;
-
-  //     // Nếu chưa có result, kiểm tra object trước
-  //     if (i > 0 && newResultArray[i - 1] === 2) {
-  //       return 0; // coi như làm sai
-  //     }
-
-  //     return 2; // vẫn chưa làm
-  //   });
-
-  //   setResultArray(newResultArray);
-  // }, [logMath, numberQuestion]); // dependency: chỉ cần logMath và numberQuestion
-
-  
 useEffect(() => {
   const newResultArray = Array.from({ length: numberQuestion }).reduce((acc, _, i) => {
     const item = logMath[i];
