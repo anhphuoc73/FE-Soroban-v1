@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { CONFIG } from 'src/config-global';
 import { BlankView } from 'src/sections/blank/view';
 
+
+
 const metadata = { title: `Trang chủ` };
 
 export default function Page() {
@@ -13,7 +15,7 @@ export default function Page() {
       </Helmet>
       <Box
         sx={{
-          backgroundImage: 'url("/logo/sieu-chi-dau-tri.jpg")', // đường dẫn ảnh nền
+          backgroundImage: `url(${CONFIG.assetsDir}"/logo/sieu-chi-dau-tri.jpg")`, // đường dẫn ảnh nền
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
