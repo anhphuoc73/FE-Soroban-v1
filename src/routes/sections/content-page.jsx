@@ -54,7 +54,7 @@ export const contentPageRoutes = [
     element: CONFIG.auth.skip ? <>{layoutContent}</> : <AuthGuard>{layoutContent}</AuthGuard>,
     // element: CONFIG.auth.skip ? <>{layoutContent}</> :  <>{layoutContent}</>,
     children: [
-      // { element: <HomePage />, index: true },
+      { element: <HomePage />, index: true },
       { path: 'report', element: <ReportPage /> },
       { path: 'admin', element: <AdminPage /> },
       { path: 'center', element: <CenterPage /> },
