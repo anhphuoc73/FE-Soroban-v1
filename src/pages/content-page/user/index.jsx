@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { CONFIG } from 'src/config-global';
 import { UserView } from '../../../sections/user/index';
 
-const metadata = { title: `Tài khoản` };
+const metadata = { title: `Tài khoản ` };
 
 export default function Page() {
   return (
