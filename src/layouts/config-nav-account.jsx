@@ -6,11 +6,13 @@ import { Iconify } from 'src/components/iconify';
 
 export const _account = [
   {
+    id: 1,
     label: 'Trang chủ',
     href: '/',
     icon: <Iconify icon="solar:home-angle-bold-duotone" />,
   },
   {
+    id: 2,
     label: 'Cập nhật mật khẩu',
     href: '#',
     icon: (

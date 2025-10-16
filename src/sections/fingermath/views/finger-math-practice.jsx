@@ -188,12 +188,6 @@ export function FingerMathPracticeView() {
                             });
 
                             setOpenResultDrawer(true); // 👉 mở Drawer
-
-                            // setItem("logFingerMath", []);
-                            // setLogMath([]);
-
-                            // ở đây nên có Modal hiện thị số câu hỏi đúng, số câu hỏi sai và câu hỏi không làm
-                            // toast.success(`Bạn đã hoàn thành ${numberQuestion} bài tập`, { duration: 2000 });
                         },
                     }
                 )

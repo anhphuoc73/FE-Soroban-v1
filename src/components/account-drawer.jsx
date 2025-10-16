@@ -17,6 +17,7 @@ import { useMockedUser } from 'src/auth/hooks/index';
 import { AccountButton } from './account-button';
 import { SignOutButton } from './sign-out-button';
 import { getProfileFromLS } from '../utils/auth';
+import ChangePasswordModal from './math/change-password-modal';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +31,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
   const { user } = useMockedUser();
 
   const [open, setOpen] = useState(false);
+
+  const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
 
   const handleOpenDrawer = useCallback(() => {
     setOpen(true);
@@ -106,13 +109,22 @@ export function AccountDrawer({ data = [], sx, ...other }) {
           >
             {data.map((option) => {
               const rootLabel = pathname.includes('/content') ? 'Home' : 'Dashboard';
-
               const rootHref = pathname.includes('/content') ? '/' : paths.content.root;
+
+              const handleItemClick = () => {
+                if (option.id === 2) {
+                  // 👉 Ở đây bạn xử lý mở modal
+                  setOpenChangePasswordModal(true);
+                  handleCloseDrawer(); // đóng drawer nếu muốn
+                } else {
+                  handleClickItem(option.label === 'Home' ? rootHref : option.href);
+                }
+              };
 
               return (
                 <MenuItem
-                  key={option.label}
-                  onClick={() => handleClickItem(option.label === 'Home' ? rootHref : option.href)}
+                  key={option.id}
+                  onClick={handleItemClick}
                   sx={{
                     py: 1,
                     color: 'text.secondary',
@@ -134,6 +146,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
                 </MenuItem>
               );
             })}
+
           </Stack>
         </Scrollbar>
 
@@ -141,6 +154,10 @@ export function AccountDrawer({ data = [], sx, ...other }) {
           <SignOutButton onClose={handleCloseDrawer} />
         </Box>
       </Drawer>
+      <ChangePasswordModal
+        open={openChangePasswordModal}
+        onClose={() => setOpenChangePasswordModal(false)}
+      />
     </>
   );
 }
