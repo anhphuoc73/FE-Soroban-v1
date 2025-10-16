@@ -4,7 +4,7 @@ import { CONFIG } from 'src/config-global';
 
 import { SorobanView } from '../../../sections/soroban/index';
 
-const metadata = { title: `Soroban` };
+const metadata = { title: `Soroban ` };
 
 export default function Page() {
   return (

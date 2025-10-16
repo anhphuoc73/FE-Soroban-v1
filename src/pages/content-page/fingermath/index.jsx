@@ -4,7 +4,7 @@ import { CONFIG } from 'src/config-global';
 
 import { FingerMathView } from '../../../sections/fingermath/index';
 
-const metadata = { title: `Finger Math` };
+const metadata = { title: `Finger Math ` };
 
 export default function Page() {
   return (
