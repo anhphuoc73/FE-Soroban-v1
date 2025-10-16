@@ -48,10 +48,10 @@ export default function ChangePasswordModal({ open, onClose }) {
     try {
       setLoading(true);
       // eslint-disable-next-line prefer-const
-      let param = {
+      const param = {
         // eslint-disable-next-line object-shorthand
         newPassword: newPassword,
-        oldPassword: confirmPassword
+        oldPassword: currentPassword
       }
       updatePasswordMutation.mutate({...param},{
               onSuccess: (response) => {
