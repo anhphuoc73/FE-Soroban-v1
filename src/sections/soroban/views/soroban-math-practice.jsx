@@ -116,7 +116,7 @@ export function SorobanPracticeView() {
         
     }
 
-    const playClapSound = () => {
+    const playClapSoundIncorrect = () => {
         const clapSounds = [
             "/sound/correct/1.mp3",
             "/sound/correct/2.mp3",
@@ -138,6 +138,18 @@ export function SorobanPracticeView() {
             setShowAnime(false);
         }, 10000);
     };
+    const playClapSoundWrong = () => {
+        const clapSounds = [
+            "/sound/wrong/1.mp3",
+        ];
+        const randomIndex = Math.floor(Math.random() * clapSounds.length);
+        const filePath = clapSounds[randomIndex];
+        const audio = new Audio(filePath);
+        audio.playbackRate = 1.2; 
+        audio.play().catch((err) => {
+            console.error("Không phát được âm thanh:", err);
+        });
+    };
     const handleEqual = () => {
         let logSorobanMath = []
         logSorobanMath = getItem("logSorobanMath")
@@ -154,7 +166,7 @@ export function SorobanPracticeView() {
                     }
                     return item;
                 });
-                playClapSound()
+                playClapSoundIncorrect()
                 console.log("Nhập kết quả đúng");
             }else{
                 logSorobanMath = logSorobanMath.map(item => {
@@ -167,6 +179,7 @@ export function SorobanPracticeView() {
                     }
                     return item;
                 });
+                playClapSoundWrong();
                 console.log("Nhập kết quả sai");
             }
             const updatedLogFingerMath = updateLogMathResult(logSorobanMath, idMath, +resultEqua, +calculate);

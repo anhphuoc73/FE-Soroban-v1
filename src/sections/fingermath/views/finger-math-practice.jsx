@@ -56,17 +56,14 @@ export function FingerMathPracticeView() {
         wrong: 0,
     });
 
-    const createPacticeFingerMathMutation = useMutation({
+    const createPracticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.createPracticeFingerMath
     })
 
-    const savePacticeFingerMathMutation = useMutation({
+    const savePracticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.savePracticeFingerMath
     })
-
-//   console.log("idMath", idMath)
     
-
     const handleCreateCalculation = () => {
         const param = {
             "count": congfigFingerMath?.calculationLength, 
@@ -75,7 +72,7 @@ export function FingerMathPracticeView() {
             "digits2": congfigFingerMath?.firstNumber, 
             "allowExceed": "no" 
         }
-        createPacticeFingerMathMutation.mutate({...param},{
+        createPracticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression 
                     const resultExpression = response?.data?.metadata?.result
@@ -114,7 +111,7 @@ export function FingerMathPracticeView() {
         
     }
 
-    const playClapSound = () => {
+    const playClapSoundIncorrect = () => {
         const clapSounds = [
             "/sound/correct/1.mp3",
             "/sound/correct/2.mp3",
@@ -126,7 +123,7 @@ export function FingerMathPracticeView() {
 
         // 🎧 Phát âm thanh
         const audio = new Audio(filePath);
-        audio.playbackRate = 2.0; // tốc độ phát nhanh gấp đôi
+        audio.playbackRate = 1.2; // tốc độ phát nhanh gấp đôi
 
         audio.play().catch((err) => {
             console.error("Không phát được âm thanh:", err);
@@ -136,11 +133,23 @@ export function FingerMathPracticeView() {
             setShowAnime(false);
         }, 10000);
     };
+
+    const playClapSoundWrong = () => {
+        const clapSounds = [
+            "/sound/wrong/1.mp3",
+        ];
+        const randomIndex = Math.floor(Math.random() * clapSounds.length);
+        const filePath = clapSounds[randomIndex];
+        const audio = new Audio(filePath);
+        audio.playbackRate = 1.2; 
+        audio.play().catch((err) => {
+            console.error("Không phát được âm thanh:", err);
+        });
+    };
     const handleEqual = () => {
         let logFingerMath = []
         logFingerMath = getItem("logFingerMath")
         if (!equal) {
-           
             if(+calculate === +resultEqua){
                 logFingerMath = logFingerMath.map(item => {
                     if (item.id === idMath) {
@@ -152,7 +161,7 @@ export function FingerMathPracticeView() {
                     }
                     return item;
                 });
-                playClapSound()
+                playClapSoundIncorrect()
                 console.log("Nhập kết quả đúng");
             }else{
                 logFingerMath = logFingerMath.map(item => {
@@ -165,21 +174,19 @@ export function FingerMathPracticeView() {
                     }
                     return item;
                 });
+                playClapSoundWrong();
                 console.log("Nhập kết quả sai");
             }
             const updatedLogFingerMath = updateLogMathResult(logFingerMath, idMath, +resultEqua, +calculate);
-
 
             setItem("logFingerMath", logFingerMath);
             setLogMath(updatedLogFingerMath);
             setResultEqua('');
             setEqual(true); 
             setStart(false);
-            if(+idMath === +numberQuestion){
-                // lưu db ==> chưa thực hiện
+            if(+idMath === +numberQuestion) {
                 const math = logFingerMath
-                // setLogMath(math)
-                savePacticeFingerMathMutation.mutate({...math},{
+                savePracticeFingerMathMutation.mutate({...math},{
                         onSuccess: (response) => {
                             setResultSummary({
                                 total: math.length,
@@ -191,9 +198,6 @@ export function FingerMathPracticeView() {
                         },
                     }
                 )
-                
-                // xóa toàn bộ bài tập trong localStorage
-                
             }
         } else {
             console.log("Button is disabled");
@@ -221,11 +225,8 @@ export function FingerMathPracticeView() {
                     setEqual(false);
                 }
             }, timePerCalculation);
-
             return () => clearInterval(timer);
         }
-
-        // Trường hợp else
         return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [result, start]);

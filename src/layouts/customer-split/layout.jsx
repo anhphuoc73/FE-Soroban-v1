@@ -26,7 +26,6 @@ export function CustomerLayout({ children }) {
   };
 
   const toggleDrawerAddContact = () => {
-    console.log('ahihi')
     toggleDrawer((newValue) => !newValue)
   };
 

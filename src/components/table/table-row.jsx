@@ -15,9 +15,6 @@ import { Iconify } from '../iconify';
 
 import { getProfileFromLS } from '../../utils/auth';
 
-
-
-
 // ----------------------------------------------------------------------
 export function RenderCellTitleTooltip({ title, isPL, sx, onClick }) {
   return (
@@ -41,6 +38,7 @@ export function RenderCellTitleTooltip({ title, isPL, sx, onClick }) {
     </Tooltip>
   );
 }
+
 // ----------------------------------------------------------------------
 export function RenderCellTitle({ title, isPL }) {
   return (
@@ -51,6 +49,7 @@ export function RenderCellTitle({ title, isPL }) {
     </Typography>
   );
 }
+
 export function RenderCellPosition({ position, isPL, onClick }) {
   const getPositionLabel = (pos) => {
     switch (pos) {
@@ -109,6 +108,7 @@ export function RenderCellPosition({ position, isPL, onClick }) {
     </Box>
   );
 }
+
 export function RenderCellActive({ title, isPL, onClick }) {
   const isActive = title === 1;
 
@@ -163,7 +163,7 @@ export function RenderCellStatus() {
   );
 }
 
-export function RenderCellAction({ onOpenEdit, onOpenDelete, params }) {
+export function RenderCellAction({ onOpenEdit, onOpenHistoryMath, params }) {
   // console.log("params", params)
   const profile = getProfileFromLS()
   return (
@@ -200,6 +200,17 @@ export function RenderCellAction({ onOpenEdit, onOpenDelete, params }) {
           </IconButton>
         </Tooltip>
       )}
+      <Tooltip title="Lịch sử" placement="top" arrow>
+        <IconButton
+          component={m.button}
+          variants={varHover(1.2)}
+          whileTap="tap"
+          whileHover="hover"
+          onMouseUp={onOpenHistoryMath}
+        >
+          <Iconify icon="solar:clock-circle-bold" width={18} />
+        </IconButton>
+      </Tooltip>
       
      
       {/* <Tooltip title="Xóa" placement="top" arrow>
