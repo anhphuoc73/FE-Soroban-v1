@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 export function Anime() {
      const images = [
         '/dolphin/1.jpg',
-        '/dolphin/2.jpg',
+        // '/dolphin/2.jpg',
         '/dolphin/3.jpg',
         '/dolphin/4.jpg',
         '/dolphin/6.jpg',
