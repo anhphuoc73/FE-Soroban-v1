@@ -15,6 +15,9 @@ export const ConfigMathApi = {
   savePracticeFingerMath(body) {
     return http.post(`${endpoints.configMath.savePracticeFingerMath}`, body);
   },
+  historyMathByUser(params) {
+    return http.get(`${endpoints.configMath.historyMathByUser}`, { params });
+  },
 
   
   

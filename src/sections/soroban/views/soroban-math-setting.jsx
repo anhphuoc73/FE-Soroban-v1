@@ -21,6 +21,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { getProfileFromLS, setProfileToLS } from 'src/utils/auth';
 import MathPDFDrawer from 'src/components/math/math-pdf-drawer';
+import { CustomNumberInput } from 'src/components/custom-input/custom-number-input';
 
 const levelParents = [
     { id: 1, value: "Không công thức" },
@@ -132,11 +133,11 @@ export function SorobanSettingView() {
         let isValid = true;
 
         if (!numberQuestion) {
-            newErrorMessages.numberQuestion = 'Vui lòng chọn số câu hỏi.';
+            newErrorMessages.numberQuestion = 'Vui lòng nhập số câu hỏi.';
             isValid = false;
         }
         if (!calculationLength) {
-            newErrorMessages.calculationLength = 'Vui lòng chọn độ dài phép tính.';
+            newErrorMessages.calculationLength = 'Vui lòng nhập độ dài phép tính.';
             isValid = false;
         }
         if (!timePerCalculation) {
@@ -303,38 +304,25 @@ export function SorobanSettingView() {
             }}
         >
              <Grid container spacing={2}>
-                <CustomSelectBasic
+                <CustomNumberInput
                     label="Số câu hỏi"
+                    placeholder="Số câu hỏi"
                     value={numberQuestion}
                     onChange={(e) => {
-                        setNumberQuestion(e.target.value);
+                        setNumberQuestion(+e.target.value);
                         setErrorMessages((prev) => ({ ...prev, numberQuestion: "" }));
                     }}
-                    options={[
-                        { value: 2, label: "2" },
-                        { value: 5, label: "5" },
-                        { value: 10, label: "10" },
-                        { value: 15, label: "15" },
-                        { value: 20, label: "20" },
-                    ]}
                     error={errorMessages.numberQuestion}
                 />
-
-                <CustomSelectBasic
+                
+                <CustomNumberInput
                     label="Độ dài phép tính"
+                    placeholder="Độ dài phép tính"
                     value={calculationLength}
                     onChange={(e) => {
-                        setCalculationLength(e.target.value);
+                        setCalculationLength(+e.target.value);
                         setErrorMessages((prev) => ({ ...prev, calculationLength: "" }));
                     }}
-                    options={[
-                        { value: 2, label: "2" },
-                        { value: 3, label: "3" },
-                        { value: 5, label: "5" },
-                        { value: 10, label: "10" },
-                        { value: 15, label: "15" },
-                        { value: 20, label: "20" },
-                    ]}
                     error={errorMessages.calculationLength}
                 />
 

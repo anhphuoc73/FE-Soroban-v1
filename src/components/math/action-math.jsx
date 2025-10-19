@@ -32,7 +32,7 @@ export default function ActionMath({
       }}
     >
       {/* Ô nhập */}
-      <TextField
+      {/* <TextField
         inputRef={inputRef}
         label="Trả lời"
         variant="outlined"
@@ -41,6 +41,38 @@ export default function ActionMath({
         onChange={handleOnchangeEqua}
         // disabled={equal}
         autoFocus={!equal}
+        sx={{
+          textAlign: "center",
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "success.dark",
+          },
+          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "success.dark",
+          },
+        }}
+      /> */}
+
+      <TextField
+        inputRef={inputRef}
+        label="Trả lời"
+        variant="outlined"
+        type="number"
+        value={resultEqua}
+        onChange={handleOnchangeEqua}
+        autoFocus={!equal}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+
+            if (!equal) {
+              // Nếu chưa trả lời → gọi hàm trả lời
+              handleEqual();
+            } else if (!start) {
+              // Nếu đã trả lời và chưa bắt đầu → gọi hàm tạo phép tính mới
+              handleCreateCalculation();
+            }
+          }
+        }}
         sx={{
           textAlign: "center",
           "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {

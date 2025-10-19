@@ -32,6 +32,7 @@ import { UserEditView } from './user-edit-popup'
 
 import { getProfileFromLS } from '../../../utils/auth'
 import { FilterUser } from './fillter-user'
+import HistoryMath from './history-math-drawer'
 
 const actionButtonList = [
   {
@@ -44,6 +45,10 @@ const actionButtonList = [
 export function UserListView(){
   const profile = getProfileFromLS()
   const [isOpenFilter, setIsOpenFilter] = useState(false)
+
+  const [openHistory, setOpenHistory] = useState(false);
+  const [closeHistory, setCloseHistory] = useState(true);
+  const [staffId, setStaffId] = useState(null);
 
   const [isOpenEdit, setIsOpenEdit] = useState(false)
   const [paramEdit, setParamEdit] = useState({})
@@ -175,8 +180,7 @@ export function UserListView(){
       renderCell: (params) => (
         <RenderCellAction
           onOpenEdit={() => handleOpenEdit(params.row)}
-          // onOpenDelete={() => handleOpenDelete(params.row)}
-          // key={params.row._id}
+          onOpenHistoryMath={() => handleOpenHistoryMath(params.row)}
           params={params.row}
         />
       ),
@@ -193,7 +197,7 @@ export function UserListView(){
     search: searching,
     filters
   }
-  console.log("defaultValue", defaultValue)
+
   const listUserQuery = useQuery({
     queryKey: ['user-list',defaultValue],
     queryFn: () => UserApi.listUser(defaultValue),
@@ -217,6 +221,15 @@ export function UserListView(){
     params.create_date = moment(params?.create_date).format('YYYY-MM-DD')
     setParamEdit(params)
   }
+  const handleOpenHistoryMath = (params) => {
+    setOpenHistory(true)
+    setCloseHistory(false)
+    setStaffId(params?.id)
+  }
+  const handleCloseHistoryMath = () => {
+    setOpenHistory(false);
+    setStaffId(null);
+  };
 
   const handleOpenDelete = (params) => {
     confirm.onTrue();
@@ -295,6 +308,7 @@ export function UserListView(){
           </Button>
         }
       />
+      <HistoryMath open={openHistory} onClose={handleCloseHistoryMath}  idStaff={staffId}  />
     </>
   )
 }
