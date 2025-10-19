@@ -50,6 +50,23 @@ export function RenderCellTitle({ title, isPL }) {
   );
 }
 
+export function RenderCellDate({ title, isPL }) {
+  const isoDate = title;
+  const date = new Date(isoDate);
+
+  const formatted = date.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+
+  return (
+    <Typography
+      sx={{ py: 2, fontSize: 14, pl: isPL ? '10px' : 0, letterSpace: 'nowrap', fontWeight: 500 }}
+    >
+      {formatted}
+    </Typography>
+  );
+}
+
 export function RenderCellPosition({ position, isPL, onClick }) {
   const getPositionLabel = (pos) => {
     switch (pos) {
@@ -164,7 +181,6 @@ export function RenderCellStatus() {
 }
 
 export function RenderCellAction({ onOpenEdit, onOpenHistoryMath, params }) {
-  // console.log("params", params)
   const profile = getProfileFromLS()
   return (
     <Stack
@@ -228,3 +244,32 @@ export function RenderCellAction({ onOpenEdit, onOpenHistoryMath, params }) {
     </Stack>
   );
 }
+
+export function RenderCellDetailMathAction({ onOpenDetailHistoryMath, params }) {
+  
+  const profile = getProfileFromLS()
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-end"
+      sx={{ fontSize: 14, outline: 'none' }}
+    >
+      <Tooltip title="Chi tiết phép tính" placement="top" arrow>
+        <IconButton
+          component={m.button}
+          variants={varHover(1.2)}
+          whileTap="tap"
+          whileHover="hover"
+          onMouseUp={onOpenDetailHistoryMath}
+        >
+          <Iconify icon="mynaui:notification-solid" width={18} />
+        </IconButton>
+      </Tooltip>
+      
+     
+      
+    </Stack>
+  );
+}
+

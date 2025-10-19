@@ -42,7 +42,8 @@ export const endpoints = {
     createPracticeFingerMath: `${CONFIG.serverUrl}/configMath/practice-finger-math`,
     createPracticeFingerMathList: `${CONFIG.serverUrl}/configMath/practice-finger-math-list`,
     savePracticeFingerMath: `${CONFIG.serverUrl}/configMath/save-practice-finger-math`,
-    
+    historyMathByUser: `${CONFIG.serverUrl}/configMath/history-math-by-user`,
+  
   },
   user: {
     me: '/user/me',
