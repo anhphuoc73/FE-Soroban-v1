@@ -184,7 +184,7 @@ export function FingerMathPracticeView() {
             setResultEqua('');
             setEqual(true); 
             setStart(false);
-            if(+idMath === +numberQuestion) {
+            if(+idMath >= +numberQuestion) {
                 const math = logFingerMath
                 savePracticeFingerMathMutation.mutate({...math},{
                         onSuccess: (response) => {

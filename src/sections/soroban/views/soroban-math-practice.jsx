@@ -190,7 +190,7 @@ export function SorobanPracticeView() {
             setResultEqua('');
             setEqual(true); 
             setStart(false);
-            if(+idMath === +numberQuestion){
+            if(+idMath >= +numberQuestion){
                 // lưu db ==> chưa thực hiện
                 const math = logSorobanMath
                 // setLogMath(math)
