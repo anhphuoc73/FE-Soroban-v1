@@ -23,27 +23,29 @@ import { Anime } from '../../../components/math/anime';
 
 export function FingerMathPracticeView() {
     const profileLocalStorage = getProfileFromLS()
-    const congfigFingerMath = profileLocalStorage?.finger_math
+    const configFingerMath = profileLocalStorage?.finger_math
     
-    const timePerCalculation = +congfigFingerMath?.timePerCalculation * 1000
+    const timePerCalculation = +configFingerMath?.timePerCalculation * 1000
     
 
     const [logMath, setLogMath] = useState(getItem("logFingerMath") || [])
 
     const [idMath, setIdMath] = useState("");
 
-    const [numberQuestion, setNumberQuestion] = useState(congfigFingerMath?.numberQuestion)
+    const [numberQuestion, setNumberQuestion] = useState(configFingerMath?.numberQuestion)
+    const [soundEnabled, setSoundEnabled] = useState(configFingerMath?.soundEnabled)
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [equal, setEqual] = useState(true);
     const [start, setStart] = useState(false);
 
-    const [calculate, setCalculate] = useState(); // kết quả đúng
+    const [calculate, setCalculate] = useState(); 
 
     const [result, setResult] = useState([]);
     const [showNumber, setShowNumber] = useState('');
     const [resultEqua, setResultEqua] = useState(''); // kết quả nhập
     const [initialTime , setInitialTime ] = useState(0);
+    
     const [open, setOpen] = useState(false);
     const [stringNumber, setStringNumber] = useState("")
 
@@ -66,10 +68,10 @@ export function FingerMathPracticeView() {
     
     const handleCreateCalculation = () => {
         const param = {
-            "count": congfigFingerMath?.calculationLength, 
-            "main": congfigFingerMath?.keyLesson, 
-            "digits1": congfigFingerMath?.firstNumber, 
-            "digits2": congfigFingerMath?.firstNumber, 
+            "count": configFingerMath?.calculationLength, 
+            "main": configFingerMath?.keyLesson, 
+            "digits1": configFingerMath?.firstNumber, 
+            "digits2": configFingerMath?.firstNumber, 
             "allowExceed": "no" 
         }
         createPracticeFingerMathMutation.mutate({...param},{
@@ -85,7 +87,7 @@ export function FingerMathPracticeView() {
                         setCalculate(resultExpression);
                         setResult([...numbersWithSign, '=?']);
                     }
-                    setInitialTime(congfigFingerMath?.timeAnswer);
+                    setInitialTime(configFingerMath?.timeAnswer);
                     setStringNumber("");
 
                     const batch = ensureItem("logFingerMath", []);
@@ -107,8 +109,6 @@ export function FingerMathPracticeView() {
                 },
             }
         )
-
-        
     }
 
     const playClapSoundIncorrect = () => {
@@ -161,7 +161,9 @@ export function FingerMathPracticeView() {
                     }
                     return item;
                 });
-                playClapSoundIncorrect()
+                if(initialTime > 0){
+                    playClapSoundIncorrect()
+                }
                 console.log("Nhập kết quả đúng");
             }else{
                 logFingerMath = logFingerMath.map(item => {
@@ -232,11 +234,8 @@ export function FingerMathPracticeView() {
     }, [result, start]);
 
     
-
-
     useEffect(() => {
         const batch = JSON.parse(localStorage.getItem("logFingerMath")) || [];
-
         if (batch.length >= numberQuestion) {
             // Nếu đã đủ số lượng bài toán
             const total = batch.length;
@@ -300,7 +299,7 @@ export function FingerMathPracticeView() {
                         },
                     }}
                 
-                >
+                > 
                     <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} />
                     
 
@@ -372,7 +371,7 @@ export function FingerMathPracticeView() {
 
            
 
-            <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} />
+            <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} soundEnabled={soundEnabled} />
 
             <ResultDrawer
                 open={openResultDrawer}

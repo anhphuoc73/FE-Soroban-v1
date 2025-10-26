@@ -1,26 +1,28 @@
 import { Grid, TextField } from "@mui/material";
 import { useState } from "react";
 
-export function CustomNumberInput({
+export function CustomFloatInput({
   grid = { xs: 12, md: 6 },
   label,
   value,
   onChange,
   error = "",
   placeholder,
+  requiredMessage = "Giá trị phải là số thực dương lớn hơn 0",
 }) {
   const [localError, setLocalError] = useState("");
 
   const handleChange = (e) => {
     const val = e.target.value.trim();
 
-    // ✅ Chỉ cho phép rỗng hoặc số nguyên dương (không dấu, không thập phân)
-    if (val === "" || /^\d+$/.test(val)) {
+    // ✅ Cho phép rỗng hoặc số thực dương (vd: 1, 1.5, 0.25)
+    if (val === "" || /^\d*\.?\d*$/.test(val)) {
       const num = Number(val);
 
-      // ✅ Nếu trống hoặc bằng 0 thì báo lỗi
-      if (val === "" || num === 0) {
-        setLocalError("Giá trị phải là số nguyên dương lớn hơn 0");
+      // ✅ Nếu rỗng hoặc <= 0 thì báo lỗi
+      // eslint-disable-next-line no-restricted-globals
+      if (val === "" || isNaN(num) || num <= 0) {
+        setLocalError(requiredMessage);
       } else {
         setLocalError("");
       }
@@ -38,25 +40,24 @@ export function CustomNumberInput({
     <Grid item xs={grid.xs} md={grid.md}>
       <TextField
         fullWidth
-        type="text" // tránh bị ép về 0
+        type="text"
         label={label}
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
         error={Boolean(showError)}
         helperText={showError || " "}
-        margin="normal" // vẫn giữ nguyên
+        margin="normal"
         inputProps={{
-          inputMode: "numeric", // mở bàn phím số trên mobile
-          pattern: "[0-9]*",
+          inputMode: "decimal", // mở bàn phím có dấu thập phân trên mobile
+          pattern: "[0-9.]*",
           onKeyDown: (e) => {
-            if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+            if (["e", "E", "+", "-", ","].includes(e.key)) {
               e.preventDefault();
             }
           },
         }}
         sx={{
-          // ✅ Giảm khoảng cách tổng thể của TextField
           mt: 0.1, // margin-top nhỏ hơn (mặc định ~2)
           mb: 0.1, // margin-bottom nhỏ hơn
           "& .MuiFormHelperText-root": {

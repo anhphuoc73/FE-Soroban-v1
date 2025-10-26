@@ -34,6 +34,7 @@ export function SorobanPracticeView() {
     const [idMath, setIdMath] = useState("");
 
     const [numberQuestion, setNumberQuestion] = useState(congfigSorobanMath?.numberQuestion)
+    const [soundEnabled, setSoundEnabled] = useState(congfigSorobanMath?.soundEnabled)
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [equal, setEqual] = useState(true);
@@ -64,9 +65,6 @@ export function SorobanPracticeView() {
     const savePacticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.savePracticeFingerMath
     })
-
-//   console.log("idMath", idMath)
-    
 
     const handleCreateCalculation = () => {
         const allowExceed = congfigSorobanMath?.allowExceed === 1 ? "yes" : congfigSorobanMath?.allowExceed === 0 ? "no": "no";
@@ -112,8 +110,6 @@ export function SorobanPracticeView() {
                 },
             }
         )
-
-        
     }
 
     const playClapSoundIncorrect = () => {
@@ -166,7 +162,9 @@ export function SorobanPracticeView() {
                     }
                     return item;
                 });
-                playClapSoundIncorrect()
+                if(initialTime > 0){
+                    playClapSoundIncorrect()
+                }
                 console.log("Nhập kết quả đúng");
             }else{
                 logSorobanMath = logSorobanMath.map(item => {
@@ -190,14 +188,12 @@ export function SorobanPracticeView() {
             setResultEqua('');
             setEqual(true); 
             setStart(false);
-            if(+idMath >= +numberQuestion){
+            if(+idMath === +numberQuestion){
                 // lưu db ==> chưa thực hiện
                 const math = logSorobanMath
                 // setLogMath(math)
                 savePacticeFingerMathMutation.mutate({...math},{
                         onSuccess: (response) => {
-                            
-
                             setResultSummary({
                                 total: math.length,
                                 correct: math.filter(item => item.result === 1).length,
@@ -323,7 +319,7 @@ export function SorobanPracticeView() {
                     }}
                 
                 >
-                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} />
+                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled}  />
                     
 
                     <ActionMath

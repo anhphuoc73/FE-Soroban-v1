@@ -15,7 +15,12 @@ export function CustomSelectBasic({
   return (
     <Grid item xs={grid.xs} md={grid.md}>
       <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth margin="normal" error={!!error}>
+        <FormControl fullWidth margin="normal" error={!!error} 
+          sx={{
+            mt: 1, 
+            mb: 2,
+          }}
+        >
           <InputLabel id={`${label}-label`}>{label}</InputLabel>
           <Select
             labelId={`${label}-label`}

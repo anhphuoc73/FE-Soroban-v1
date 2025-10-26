@@ -9,15 +9,15 @@ export function ResultDrawer({ open, onClose, total, correct, wrong, data = [] }
         sx={{
             "& .MuiDrawer-paper": {
                 width: {
-                xs: "80%",   // mobile: chiếm 80% màn hình
-                sm: "60%",   // tablet: chiếm 60%
-                md: "40%",   // desktop nhỏ: chiếm 40%
-                lg: "30%",   // desktop lớn: chiếm 30%
+                  xs: "80%",   // mobile: chiếm 80% màn hình
+                  sm: "60%",   // tablet: chiếm 60%
+                  md: "40%",   // desktop nhỏ: chiếm 40%
+                  lg: "30%",   // desktop lớn: chiếm 30%
                 },
                 maxWidth: 600, // giới hạn max chiều rộng để không quá to
                 borderRadius: {
-                xs: 0, // mobile full width không cần bo góc
-                sm: "12px 0 0 12px", // tablet trở lên bo góc
+                  xs: 0, // mobile full width không cần bo góc
+                  sm: "12px 0 0 12px", // tablet trở lên bo góc
                 },
                 p: 3,
                 display: "flex",

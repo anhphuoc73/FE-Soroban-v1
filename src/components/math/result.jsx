@@ -1,58 +1,73 @@
 import { useEffect, useState } from "react";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { Iconify } from "../iconify";
 
 export function ResultMathView({ numberQuestion, logMath }) {
   const [resultArray, setResultArray] = useState([]);
 
-useEffect(() => {
-  const newResultArray = Array.from({ length: numberQuestion }).reduce((acc, _, i) => {
-    const item = logMath[i];
+  useEffect(() => {
+    const newResultArray = Array.from({ length: numberQuestion }).reduce(
+      (acc, _, i) => {
+        const item = logMath[i];
 
-    if (!item) {
-      acc.push(2); // chưa làm
-    } else if (item.result === 1) {
-      acc.push(1); // đúng
-    } else if (item.result === 0) {
-      acc.push(0); // sai
-    } else {
-      // eslint-disable-next-line no-lonely-if
-      if (i > 0 && acc[i - 1] === 2) {
-        acc.push(0); 
-      } else {
-        acc.push(2);
-      }
-    }
+        if (!item) {
+          acc.push(2); // chưa làm
+        } else if (item.result === 1) {
+          acc.push(1); // đúng
+        } else if (item.result === 0) {
+          acc.push(0); // sai
+        } else {
+          // eslint-disable-next-line no-lonely-if
+          if (i > 0 && acc[i - 1] === 2) {
+            acc.push(0);
+          } else {
+            acc.push(2);
+          }
+        }
 
-    return acc;
-  }, []);
+        return acc;
+      },
+      []
+    );
 
-  setResultArray(newResultArray);
-}, [logMath, numberQuestion]);
-
+    setResultArray(newResultArray);
+  }, [logMath, numberQuestion]);
 
   const renderIcon = (status, index) => {
+    let iconProps = {};
+
     switch (status) {
       case 1:
-        return (
-          <IconButton key={index}>
-            <Iconify width={35} color="success.dark" icon="lets-icons:check-ring" />
-          </IconButton>
-        );
+        iconProps = { color: "success.dark", icon: "lets-icons:check-ring" };
+        break;
       case 0:
-        return (
-          <IconButton key={index}>
-            <Iconify width={35} color="error.dark" icon="humbleicons:times-circle" />
-          </IconButton>
-        );
-      case 2:
+        iconProps = { color: "error.dark", icon: "humbleicons:times-circle" };
+        break;
       default:
-        return (
-          <IconButton key={index}>
-            <Iconify width={35} color="grey.500" icon="ri:circle-line" />
-          </IconButton>
-        );
+        iconProps = { color: "grey.500", icon: "ri:circle-line" };
+        break;
     }
+
+    return (
+      <Box
+        key={index}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{ width: 20, textAlign: "right", color: "text.secondary" }}
+        >
+          {index + 1}.
+        </Typography>
+        <IconButton size="small">
+          <Iconify width={35} {...iconProps} />
+        </IconButton>
+      </Box>
+    );
   };
 
   return (
@@ -64,15 +79,14 @@ useEffect(() => {
         p: 1,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: 1,
         height: "100%",
-        maxHeight: 14 * 60, // 13 icon * chiều cao ước lượng mỗi icon 50px
+        maxHeight: 14 * 60, // tối đa 14 biểu tượng
         overflowY: "auto",
       }}
     >
       {resultArray.map((status, i) => renderIcon(status, i))}
     </Box>
-
   );
 }

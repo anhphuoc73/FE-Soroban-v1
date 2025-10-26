@@ -22,6 +22,8 @@ import { toast } from 'sonner';
 import { getProfileFromLS, setProfileToLS } from 'src/utils/auth';
 import MathPDFDrawer from 'src/components/math/math-pdf-drawer';
 import { CustomNumberInput } from 'src/components/custom-input/custom-number-input';
+import { CustomFloatInput } from 'src/components/custom-input/custom-float-input';
+import { CustomTextInput } from 'src/components/custom-input/custom-text-input';
 
 const levelParents = [
     { id: 1, value: "Không công thức" },
@@ -54,6 +56,9 @@ export function FingerMathSettingView() {
     const [rangeResult, setRangeResult] = React.useState(congfigFingerMath?.rangeResult);
     const [displayStyle, setDisplayStyle] = React.useState(congfigFingerMath?.displayStyle);
 
+    const [fullname, setFullname] = React.useState(congfigFingerMath?.fullname);
+    const [teachername, setTeachername] = React.useState(congfigFingerMath?.teachername);
+
     const [openPDFDrawer, setOpenPDFDrawer] = useState(false);
 
     const [formError, setFormError] = useState('');
@@ -63,7 +68,9 @@ export function FingerMathSettingView() {
         timePerCalculation: '',
         timeAnswer: '',
         firstNumber: '',
-        secondNumber: ''
+        secondNumber: '',
+        fullname: '',
+        classname: '',      
     });
 
     const handleLevelParentChange = (event) => {
@@ -141,7 +148,9 @@ export function FingerMathSettingView() {
             timePerCalculation: '',
             timeAnswer: '',
             firstNumber: '',
-            secondNumber: ''
+            secondNumber: '',
+            fullname: "", 
+            teachername: "",
         };
     
         let isValid = true;
@@ -154,7 +163,7 @@ export function FingerMathSettingView() {
             newErrorMessages.calculationLength = 'Vui lòng nhập độ dài phép tính.';
             isValid = false;
         }
-        if (!timePerCalculation) {
+        if (!timePerCalculation || Number(timePerCalculation) === 0) {
             newErrorMessages.timePerCalculation = 'Vui lòng nhập thời gian mỗi phép tính.';
             isValid = false;
         }
@@ -168,6 +177,15 @@ export function FingerMathSettingView() {
         }
         if (!secondNumber) {
             newErrorMessages.secondNumber = 'Vui lòng chọn số hạng 2.';
+            isValid = false;
+        }
+
+        if (!fullname) {
+            newErrorMessages.fullname = 'Vui lòng nhập họ và tên';
+            isValid = false;
+        }
+        if (!teachername) {
+            newErrorMessages.teachername = 'Vui lòng nhập tên giáo viên';
             isValid = false;
         }
 
@@ -191,11 +209,14 @@ export function FingerMathSettingView() {
                 soundEnabledName: soundEnabled === 1 ? "Có" : soundEnabled === 0 ? "Không" : "",
                 keyParent: parentId,
                 valueParent: levelParents.find(item => item.id === parentId)?.value,
+                fullname,
+                teachername, 
             };
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.finger_math = param;
                         setProfileToLS(profileLocalStorage)
+                        localStorage.removeItem('logFingerMath');
                         toast.success(response?.data?.message || 'Cập nhật cấu hình thành công', { duration: 2000 });
                     },
                     onError: (error) => {
@@ -243,10 +264,6 @@ export function FingerMathSettingView() {
             }
         // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [options]);
-
-    
-    
-
     return (
         <Box
             sx={{
@@ -261,12 +278,34 @@ export function FingerMathSettingView() {
             }}
         >
              <Grid container spacing={2}>
+                <CustomTextInput 
+                    label="Họ và tên"
+                    placeholder="Họ và tên"
+                    value={fullname}
+                    onChange={(e) => {
+                        setFullname(e.target.value);
+                        setErrorMessages((prev) => ({ ...prev, fullname: "" }));
+                    }}
+                    error={errorMessages.fullname}
+                
+                />
+                <CustomTextInput 
+                    label="Tên giáo viên"
+                    placeholder="Tên giáo viên"
+                    value={teachername}
+                    onChange={(e) => {
+                        setTeachername(e.target.value);
+                        setErrorMessages((prev) => ({ ...prev, teachername: "" }));
+                    }}
+                    error={errorMessages.teachername}
+                
+                />
                 <CustomNumberInput
                     label="Số câu hỏi"
                     placeholder="Số câu hỏi"
                     value={numberQuestion}
                     onChange={(e) => {
-                        setNumberQuestion(+e.target.value);
+                        setNumberQuestion(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, numberQuestion: "" }));
                     }}
                     error={errorMessages.numberQuestion}
@@ -277,48 +316,31 @@ export function FingerMathSettingView() {
                     placeholder="Độ dài phép tính"
                     value={calculationLength}
                     onChange={(e) => {
-                        setCalculationLength(+e.target.value);
+                        setCalculationLength(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, calculationLength: "" }));
                     }}
                     error={errorMessages.calculationLength}
                 />
 
-                <CustomSelectBasic
+                <CustomFloatInput
                     label="Thời gian mỗi phép tính (giây)"
+                    placeholder="Thời gian mỗi phép tính (giây)"
                     value={timePerCalculation}
                     onChange={(e) => {
                         setTimePerCalculation(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, timePerCalculation: "" }));
                     }}
-                    options={[
-                        { value: 1.0, label: "1.0" },
-                        { value: 1.2, label: "1.2" },
-                        { value: 14, label: "1.4" },
-                        { value: 16, label: "1.6" },
-                        { value: 1.8, label: "1.8" },
-                        { value: 2.0, label: "2.0" },
-                        { value: 2.2, label: "2.2" },
-                        { value: 2.4, label: "2.4" },
-                        { value: 2.6, label: "2.6" },
-                        { value: 2.8, label: "2.8" },
-                        { value: 3.0, label: "3.0" },
-                    ]}
                     error={errorMessages.timePerCalculation}
                 />
 
-                <CustomSelectBasic
+                <CustomNumberInput
                     label="Thời gian trả lời (giây)"
+                    placeholder="Thời gian trả lời (giây)"
                     value={timeAnswer}
                     onChange={(e) => {
                         setTimeAnswer(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, timeAnswer: "" }));
                     }}
-                    options={[
-                        { value: 5, label: "5" },
-                        { value: 10, label: "10" },
-                        { value: 15, label: "15" },
-                        { value: 20, label: "20" },
-                    ]}
                     error={errorMessages.timeAnswer}
                 />
 
@@ -412,30 +434,7 @@ export function FingerMathSettingView() {
                         </Box>
                     </Box>
                 </Grid>
-
-                {/* <Grid item xs={12} md={6}>
-                    <Box sx={{ minWidth: 120 }}>
-                        <Box>
-                            <Button variant="contained" color="primary" sx={{mt:2}} onClick={saveConfig}>
-                                Lưu thiết lập
-                            </Button>
-                            {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
-                        </Box>
-                        <Box>
-                            <Button
-                                variant="contained"
-                                sx={{ backgroundColor: "#1976d2" }}
-                                onClick={() => setOpenPDFDrawer(true)}
-                            >
-                                📘 Tạo đề
-                            </Button>
-                            <MathPDFDrawer open={openPDFDrawer} onClose={() => setOpenPDFDrawer(false)} exercises={exercises} />
-                            {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
-                        </Box>
-                    </Box>
-                    
-                </Grid> */}
-
+                
                 <Grid item xs={12} md={6}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
                         {/* Nút Lưu thiết lập */}
