@@ -3,24 +3,6 @@ import { useEffect, useState } from 'react';
 import { Iconify } from 'src/components/iconify';
 
 export function Timer({initialTime, setInitialTime, equal, setEqual, start, setStart}) { 
-    // eslint-disable-next-line consistent-return
-    // useEffect(() => {
-    //     if(!equal){
-    //         if (initialTime <= 0) {
-    //             setEqual(true);
-    //             setStart(false);
-    //         }; 
-    //         const timmerId = setInterval(() => {
-    //             setInitialTime((prev) => prev - 1);
-                
-    //         }, 1000); 
-    //         // eslint-disable-next-line consistent-return
-    //         return () => clearInterval(timmerId); 
-    //     }
-        
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [equal, initialTime]);
-
     useEffect(() => {
         if (!equal && start) {
             if (initialTime <= 0) {

@@ -22,6 +22,8 @@ import { toast } from 'sonner';
 import { getProfileFromLS, setProfileToLS } from 'src/utils/auth';
 import MathPDFDrawer from 'src/components/math/math-pdf-drawer';
 import { CustomNumberInput } from 'src/components/custom-input/custom-number-input';
+import { CustomFloatInput } from 'src/components/custom-input/custom-float-input';
+import { CustomTextInput } from 'src/components/custom-input/custom-text-input';
 
 const levelParents = [
     { id: 1, value: "Không công thức" },
@@ -56,6 +58,9 @@ export function SorobanSettingView() {
     const [allowExceed, setAllowExceed] = React.useState(congfigSorobanMath?.allowExceed);
     const [openPDFDrawer, setOpenPDFDrawer] = useState(false);
 
+    const [fullname, setFullname] = React.useState(congfigSorobanMath?.fullname);
+    const [teachername, setTeachername] = React.useState(congfigSorobanMath?.teachername);
+
     const [formError, setFormError] = useState('');
     const [errorMessages, setErrorMessages] = useState({
         numberQuestion: '',
@@ -63,7 +68,9 @@ export function SorobanSettingView() {
         timePerCalculation: '',
         timeAnswer: '',
         firstNumber: '',
-        secondNumber: ''
+        secondNumber: '',
+        fullname: "", 
+        teachername: "",
     });
 
     const handleLevelParentChange = (event) => {
@@ -127,7 +134,8 @@ export function SorobanSettingView() {
             timePerCalculation: '',
             timeAnswer: '',
             firstNumber: '',
-            secondNumber: ''
+            fullname: "", 
+            teachername: "",
         };
     
         let isValid = true;
@@ -156,7 +164,14 @@ export function SorobanSettingView() {
             newErrorMessages.secondNumber = 'Vui lòng chọn số hạng 2.';
             isValid = false;
         }
-
+        if (!fullname) {
+            newErrorMessages.fullname = 'Vui lòng nhập họ và tên';
+            isValid = false;
+        }
+        if (!teachername) {
+            newErrorMessages.teachername = 'Vui lòng nhập tên giáo viên';
+            isValid = false;
+        }
         
 
         setErrorMessages(newErrorMessages);
@@ -179,13 +194,16 @@ export function SorobanSettingView() {
                 soundEnabledName: soundEnabled === 1 ? "Có" : soundEnabled === 0 ? "Không" : "",
                 keyParent: parentId,
                 valueParent: levelParents.find(item => item.id === parentId)?.value,
-                allowExceed
+                allowExceed,
+                fullname,
+                teachername,
             };
            
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.soroban_math = param;
                         setProfileToLS(profileLocalStorage)
+                        localStorage.removeItem('logSorobanMath');
                         toast.success(response?.data?.message || 'Cập nhật cấu hình thành công', { duration: 2000 });
                     },
                     onError: (error) => {
@@ -304,12 +322,34 @@ export function SorobanSettingView() {
             }}
         >
              <Grid container spacing={2}>
+                <CustomTextInput 
+                    label="Họ và tên"
+                    placeholder="Họ và tên"
+                    value={fullname}
+                    onChange={(e) => {
+                        setFullname(e.target.value);
+                        setErrorMessages((prev) => ({ ...prev, fullname: "" }));
+                    }}
+                    error={errorMessages.fullname}
+                
+                />
+                <CustomTextInput 
+                    label="Tên giáo viên"
+                    placeholder="Tên giáo viên"
+                    value={teachername}
+                    onChange={(e) => {
+                        setTeachername(e.target.value);
+                        setErrorMessages((prev) => ({ ...prev, teachername: "" }));
+                    }}
+                    error={errorMessages.teachername}
+                
+                />
                 <CustomNumberInput
                     label="Số câu hỏi"
                     placeholder="Số câu hỏi"
                     value={numberQuestion}
                     onChange={(e) => {
-                        setNumberQuestion(+e.target.value);
+                        setNumberQuestion(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, numberQuestion: "" }));
                     }}
                     error={errorMessages.numberQuestion}
@@ -320,49 +360,30 @@ export function SorobanSettingView() {
                     placeholder="Độ dài phép tính"
                     value={calculationLength}
                     onChange={(e) => {
-                        setCalculationLength(+e.target.value);
+                        setCalculationLength(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, calculationLength: "" }));
                     }}
                     error={errorMessages.calculationLength}
                 />
 
-                <CustomSelectBasic
+                <CustomFloatInput
                     label="Thời gian mỗi phép tính (giây)"
+                    placeholder="Thời gian mỗi phép tính (giây)"
                     value={timePerCalculation}
                     onChange={(e) => {
                         setTimePerCalculation(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, timePerCalculation: "" }));
                     }}
-                    options={[
-                        { value: 1.0, label: "1.0" },
-                        { value: 1.2, label: "1.2" },
-                        { value: 14, label: "1.4" },
-                        { value: 16, label: "1.6" },
-                        { value: 1.8, label: "1.8" },
-                        { value: 2.0, label: "2.0" },
-                        { value: 2.2, label: "2.2" },
-                        { value: 2.4, label: "2.4" },
-                        { value: 2.6, label: "2.6" },
-                        { value: 2.8, label: "2.8" },
-                        { value: 3.0, label: "3.0" },
-                    ]}
                     error={errorMessages.timePerCalculation}
                 />
-
-                <CustomSelectBasic
+                <CustomNumberInput
                     label="Thời gian trả lời (giây)"
+                    placeholder="Thời gian trả lời (giây)"
                     value={timeAnswer}
                     onChange={(e) => {
                         setTimeAnswer(e.target.value);
                         setErrorMessages((prev) => ({ ...prev, timeAnswer: "" }));
                     }}
-                    options={[
-                        { value: 2, label: "2" },
-                        { value: 5, label: "5" },
-                        { value: 10, label: "10" },
-                        { value: 15, label: "15" },
-                        { value: 20, label: "20" },
-                    ]}
                     error={errorMessages.timeAnswer}
                 />
 

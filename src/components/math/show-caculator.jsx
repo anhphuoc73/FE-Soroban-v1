@@ -1,58 +1,53 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import * as React from "react";
+import {
+  Box,
+  Drawer,
+  Button,
+  Divider,
+  Typography,
+} from "@mui/material";
 // eslint-disable-next-line import/no-unresolved
-import { Iconify } from 'src/components/iconify';
-import { Typography } from '@mui/material';
+import { Iconify } from "src/components/iconify";
 
-export function ShowCaculator({open, setOpen, stringNumber}) {
+export function ShowCaculator({ open, setOpen, stringNumber }) {
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
   const DrawerList = (
-  <Box
-    sx={{
-      width: {
-        xs: "80vw",   // mobile: 80% màn hình
-        sm: "70vw",   // tablet
-        md: "50vw",   // desktop vừa
-        lg: "40vw",   // desktop lớn
-      },
-      maxWidth: "550px",
-      display: "flex",
-      flexDirection: "column",
-      pt: 3,
-      pl: 3,
-      pr: 3,
-      whiteSpace: "normal",   // cho phép xuống dòng
-      wordWrap: "break-word", // tự cắt từ nếu quá dài
-      overflowX: "hidden",    // không scroll ngang
-    }}
-    role="presentation"
-    onClick={toggleDrawer(false)}
-  >
-    <Typography
+    <Box
       sx={{
-        fontSize: 30,
-        fontWeight: "bold",
-        color: "success.dark",
-        whiteSpace: "normal",   // quan trọng: xuống dòng
-        wordBreak: "break-word" // cắt từ dài
+        width: {
+          xs: "80vw",
+          sm: "70vw",
+          md: "50vw",
+          lg: "40vw",
+        },
+        maxWidth: "550px",
+        display: "flex",
+        flexDirection: "column",
+        pt: 3,
+        pl: 3,
+        pr: 3,
+        whiteSpace: "normal",
+        wordWrap: "break-word",
+        overflowX: "hidden",
+        flexGrow: 1, // chiếm phần giữa để nút Đóng dính dưới
       }}
+      role="presentation"
     >
-      {stringNumber}
-    </Typography>
-  </Box>
-);
-
+      <Typography
+        sx={{
+          fontSize: 30,
+          fontWeight: "bold",
+          color: "success.dark",
+          wordBreak: "break-word",
+        }}
+      >
+        {stringNumber}
+      </Typography>
+    </Box>
+  );
 
   return (
     <Box>
@@ -63,18 +58,62 @@ export function ShowCaculator({open, setOpen, stringNumber}) {
         PaperProps={{
           sx: {
             width: {
-              xs: "80vw",   // màn hình nhỏ: 80% chiều rộng
-              sm: "70vw",   // sm trở lên: 70%
-              md: "50vw",   // md trở lên: 50%
-              lg: "40vw",   // lg trở lên: 40%
+              xs: "80vw",
+              sm: "70vw",
+              md: "30vw",
+              lg: "20vw",
             },
-            maxWidth: "550px", // vẫn giữ giới hạn trên
+            maxWidth: "550px",
             borderTopLeftRadius: 12,
             borderBottomLeftRadius: 12,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
           },
         }}
       >
+        {/* Header */}
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: "#118D57",
+            color: "#fff",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h6" fontWeight={600}>
+            Trung tâm toán tư duy Vina Soroban
+          </Typography>
+        </Box>
+
+        <Divider />
+
+        {/* Nội dung */}
         {DrawerList}
+
+        {/* Nút Đóng */}
+        <Box
+          sx={{
+            p: 2,
+            textAlign: "center",
+            borderTop: "1px solid #eee",
+          }}
+        >
+          <Button
+            variant="contained"
+            
+            onClick={toggleDrawer(false)}
+            fullWidth
+            sx={{ 
+              fontWeight: 600, 
+              py: 1.2,
+              backgroundColor:"#118D57"
+            }} // py để nút cao hơn một chút
+          >
+            Đóng
+          </Button>
+        </Box>
+
       </Drawer>
     </Box>
   );

@@ -2,48 +2,29 @@
 import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-export default function ShowCalculatorInterval({ showNumber, timePerCalculation }) {
-  // useEffect(() => {
-  //   let audio;
-
-  //   if (showNumber !== undefined && showNumber !== null && showNumber !== "") {
-  //     const filePath =
-  //       timePerCalculation >= 1000
-  //         ? `/number/${showNumber}.mp3`
-  //         : `/number/tit.mp3`;
-
-  //     const audio = new Audio(filePath);
-
-  //     // Nếu là số thì phát nhanh gấp đôi
-  //     if (timePerCalculation < 1000) {
-  //       audio.playbackRate = 2.0;
-  //     }
-
-  //     audio.play().catch((err) => {
-  //       console.error("Không phát được âm thanh:", err);
-  //     });
-  //   }
-
-
-  //   return () => {
-  //     if (audio) {
-  //       audio.pause();
-  //       audio.currentTime = 0;
-  //     }
-  //   };
-  // }, [showNumber, timePerCalculation]);
-
-
+export default function ShowCalculatorInterval({ showNumber, timePerCalculation, soundEnabled }) {
   useEffect(() => {
     if (!showNumber) return;
 
     const numberFile = `/number/${showNumber}.mp3`;
     const defaultFile = `/number/tit.mp3`;
 
+     
+
     // Kiểm tra file số có tồn tại
     fetch(numberFile, { method: "HEAD" })
       .then((res) => {
-        const fileToPlay = res.ok ? numberFile : defaultFile;
+        let soundFile = "";
+        if(timePerCalculation < 1000){
+          soundFile = defaultFile
+        }else{
+          if(+soundEnabled === 1){
+            soundFile = defaultFile
+          }else{
+            soundFile = res.ok ? numberFile : defaultFile;
+          }
+        }
+        const fileToPlay = soundFile
         const audio = new Audio(fileToPlay);
 
         // Nếu timePerCalculation < 1000, phát nhanh gấp đôi
@@ -70,8 +51,6 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation 
       });
     }, [showNumber, timePerCalculation]);
 
-
-
   return (
     <Box
       sx={{
@@ -96,8 +75,7 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation 
             lg: 300,
           },
           fontWeight: 500,
-          background:
-            "linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)",
+          background: "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           zIndex: 1000,

@@ -3,28 +3,10 @@ import { useEffect, useState } from 'react';
 import { Iconify } from 'src/components/iconify';
 
 export function Timer({initialTime, setInitialTime, equal, setEqual, start, setStart}) { 
-    // eslint-disable-next-line consistent-return
-    // useEffect(() => {
-    //     if(!equal){
-    //         if (initialTime <= 0) {
-    //             setEqual(true);
-    //             setStart(false);
-    //         }; 
-    //         const timmerId = setInterval(() => {
-    //             setInitialTime((prev) => prev - 1);
-                
-    //         }, 1000); 
-    //         // eslint-disable-next-line consistent-return
-    //         return () => clearInterval(timmerId); 
-    //     }
-        
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [equal, initialTime]);
-
     useEffect(() => {
         if (!equal && start) {
             if (initialTime <= 0) {
-            setEqual(true);
+            // setEqual(true);
             setStart(false);
             return;
             }
@@ -44,7 +26,7 @@ export function Timer({initialTime, setInitialTime, equal, setEqual, start, setS
     }, [equal, initialTime, start]);
 
     const playNumberSound = (num) => {
-        const soundPath = `/number/${num}.mp3`;
+        const soundPath = `/number/tit2.mp3`;
         try {
             const audio = new Audio(soundPath);
             audio.playbackRate = 1.2; // tốc độ phát nhanh hơn 1 chút
