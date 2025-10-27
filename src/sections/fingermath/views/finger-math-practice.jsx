@@ -207,7 +207,8 @@ export function FingerMathPracticeView() {
                                 wrong: math.filter(item => item.result === 0).length
                             });
 
-                            setOpenResultDrawer(true); // 👉 mở Drawer
+                            // setOpenResultDrawer(true); // 👉 mở Drawer
+                            setReport(true)
                         },
                     }
                 )
@@ -228,7 +229,6 @@ export function FingerMathPracticeView() {
         setReport(prev => !prev)
         setLogMathFinger(getItem("logFingerMath"))
     }
-    console.log(logMathFinger)
 
    // bắt đầu chạy bài toán
     useEffect(() => {
@@ -276,9 +276,11 @@ export function FingerMathPracticeView() {
         if (!equal && inputRef.current) {
             inputRef.current.focus();
         }
+        setLogMathFinger(getItem("logFingerMath"));
     }, [equal]);
 
 
+    
     return (
         // numberQuestion, setNumberQuestion
         // logMath, setLogMath
@@ -394,9 +396,10 @@ export function FingerMathPracticeView() {
                 setReport={setReport}
                 content = {logMathFinger} 
                 infoReport={infoReport} 
+                setLogMath={setLogMath}
             />
             
-            <ResultDrawer
+            {/* <ResultDrawer
                 open={openResultDrawer}
                 // onClose={() => setOpenResultDrawer(false)}
                 onClose={() => {
@@ -416,7 +419,7 @@ export function FingerMathPracticeView() {
                 correct={resultSummary.correct}
                 wrong={resultSummary.wrong}
                 data={logMath}
-            />
+            /> */}
               
         </Box>
         
