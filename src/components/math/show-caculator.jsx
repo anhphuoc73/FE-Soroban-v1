@@ -108,7 +108,7 @@ export function ShowCaculator({ open, setOpen, stringNumber }) {
               fontWeight: 600, 
               py: 1.2,
               backgroundColor:"#118D57"
-            }} // py để nút cao hơn một chút
+            }}
           >
             Đóng
           </Button>
