@@ -15,10 +15,7 @@ import ShowCalculatorInterval from '../../../components/math/show-caculator-inte
 import { ensureItem, getItem, setItem } from '../../../utils/localStorage';
 import { ResultDrawer } from '../../../components/math/result-drawer';
 import { Anime } from '../../../components/math/anime';
-// import { use } from 'react';
-
-
-
+import { ReportDrawer } from 'src/components/math/report-drawer';
 
 
 export function FingerMathPracticeView() {
@@ -29,6 +26,7 @@ export function FingerMathPracticeView() {
     
 
     const [logMath, setLogMath] = useState(getItem("logFingerMath") || [])
+    const [logMathFinger, setLogMathFinger] = useState(getItem("logFingerMath") || [])
 
     const [idMath, setIdMath] = useState("");
 
@@ -47,6 +45,7 @@ export function FingerMathPracticeView() {
     const [initialTime , setInitialTime ] = useState(0);
     
     const [open, setOpen] = useState(false);
+    const [report, setReport] = useState(false);
     const [stringNumber, setStringNumber] = useState("")
 
     const [showAnime, setShowAnime] = useState(false);
@@ -57,6 +56,18 @@ export function FingerMathPracticeView() {
         correct: 0,
         wrong: 0,
     });
+
+    const [infoReport, setInforReport] = useState({
+        fullname: configFingerMath?.fullname,
+        mathTypeName: "FingerMath",
+        valueLesson: configFingerMath?.valueLesson,
+        calculation:"+/-",
+        timePerCalculation: configFingerMath?.timePerCalculation,
+        firstNumber:configFingerMath?.firstNumber,
+        secondNumber: configFingerMath?.secondNumber,
+        numberQuestion: configFingerMath?.numberQuestion,
+        calculationLength:configFingerMath?.calculationLength,
+    })
 
     const createPracticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.createPracticeFingerMath
@@ -213,6 +224,11 @@ export function FingerMathPracticeView() {
     const handleNoti = () => {
         setOpen(prev => !prev)
     }
+    const handleReport = () => {
+        setReport(prev => !prev)
+        setLogMathFinger(getItem("logFingerMath"))
+    }
+    console.log(logMathFinger)
 
    // bắt đầu chạy bài toán
     useEffect(() => {
@@ -302,13 +318,13 @@ export function FingerMathPracticeView() {
                 > 
                     <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} />
                     
-
                     <ActionMath
                         resultEqua={resultEqua}
                         handleOnchangeEqua={handleOnchangeEqua}
                         handleEqual={handleEqual}
                         handleCreateCalculation={handleCreateCalculation}
                         handleNoti={handleNoti}
+                        handleReport={handleReport}
                         equal={equal}
                         start={start}
                     />
@@ -330,6 +346,7 @@ export function FingerMathPracticeView() {
                         setStart={setStart}
                     />
                 </Box>
+
                 {showAnime && (
                     <Box
                     sx={{
@@ -370,9 +387,15 @@ export function FingerMathPracticeView() {
             </Box> 
 
            
-
             <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} soundEnabled={soundEnabled} />
 
+            <ReportDrawer 
+                report={report}              
+                setReport={setReport}
+                content = {logMathFinger} 
+                infoReport={infoReport} 
+            />
+            
             <ResultDrawer
                 open={openResultDrawer}
                 // onClose={() => setOpenResultDrawer(false)}

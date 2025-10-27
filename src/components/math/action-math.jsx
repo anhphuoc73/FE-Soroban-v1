@@ -8,6 +8,7 @@ export default function ActionMath({
   handleEqual,
   handleCreateCalculation,
   handleNoti,
+  handleReport,
   equal,
   start,
 }) {
@@ -31,27 +32,6 @@ export default function ActionMath({
         gap: 2,
       }}
     >
-      {/* Ô nhập */}
-      {/* <TextField
-        inputRef={inputRef}
-        label="Trả lời"
-        variant="outlined"
-        type="number"
-        value={resultEqua}
-        onChange={handleOnchangeEqua}
-        // disabled={equal}
-        autoFocus={!equal}
-        sx={{
-          textAlign: "center",
-          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "success.dark",
-          },
-          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "success.dark",
-          },
-        }}
-      /> */}
-
       <TextField
         inputRef={inputRef}
         label="Trả lời"
@@ -117,6 +97,15 @@ export default function ActionMath({
             </IconButton>
           </span>
         </Tooltip>
+
+        <Tooltip title="Báo cáo" arrow>
+          <span>
+            <IconButton onClick={handleReport} >
+              <Iconify width={50} color="success.dark" icon="mdi:chart-bar" />
+            </IconButton>
+          </span>
+        </Tooltip>
+
       </Box>
     </Box>
   );
