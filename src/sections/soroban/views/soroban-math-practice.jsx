@@ -15,6 +15,7 @@ import ShowCalculatorInterval from '../../../components/math/show-caculator-inte
 import { ensureItem, getItem, setItem } from '../../../utils/localStorage';
 import { ResultDrawer } from '../../../components/math/result-drawer';
 import { Anime } from '../../../components/math/anime';
+import { ReportDrawer } from 'src/components/math/report-drawer';
 // import { use } from 'react';
 
 
@@ -30,6 +31,7 @@ export function SorobanPracticeView() {
 
     // logFingerMath
     const [logMath, setLogMath] = useState(getItem("logSorobanMath") || [])
+    const [logMathSoroban, setLogMathSoroban] = useState(getItem("logSorobanMath") || [])
 
     const [idMath, setIdMath] = useState("");
 
@@ -47,6 +49,7 @@ export function SorobanPracticeView() {
     const [resultEqua, setResultEqua] = useState(''); // kết quả nhập
     const [initialTime , setInitialTime ] = useState(0);
     const [open, setOpen] = useState(false);
+    const [report, setReport] = useState(false);
     const [stringNumber, setStringNumber] = useState("")
 
     const [showAnime, setShowAnime] = useState(false);
@@ -57,6 +60,17 @@ export function SorobanPracticeView() {
         correct: 0,
         wrong: 0,
     });
+    const [infoReport, setInforReport] = useState({
+        fullname: congfigSorobanMath?.fullname,
+        mathTypeName: "Soroban",
+        valueLesson: congfigSorobanMath?.valueLesson,
+        calculation:"+/-",
+        timePerCalculation: congfigSorobanMath?.timePerCalculation,
+        firstNumber:congfigSorobanMath?.firstNumber,
+        secondNumber: congfigSorobanMath?.secondNumber,
+        numberQuestion: congfigSorobanMath?.numberQuestion,
+        calculationLength:congfigSorobanMath?.calculationLength,
+    })
 
     const createPacticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.createPracticeFingerMath
@@ -200,18 +214,12 @@ export function SorobanPracticeView() {
                                 wrong: math.filter(item => item.result === 0).length
                             });
 
-                            setOpenResultDrawer(true); // 👉 mở Drawer
-
-                            // setItem("logFingerMath", []);
-                            // setLogMath([]);
-
-                            // ở đây nên có Modal hiện thị số câu hỏi đúng, số câu hỏi sai và câu hỏi không làm
-                            // toast.success(`Bạn đã hoàn thành ${numberQuestion} bài tập`, { duration: 2000 });
+                            // setOpenResultDrawer(true); // 👉 mở Drawer
+                            setReport(true)
+                            
                         },
                     }
                 )
-                
-                // xóa toàn bộ bài tập trong localStorage
                 
             }
         } else {
@@ -225,6 +233,10 @@ export function SorobanPracticeView() {
 
     const handleNoti = () => {
         setOpen(prev => !prev)
+    }
+    const handleReport = () => {
+        setReport(prev => !prev)
+        setLogMathFinger(getItem("logFingerMath"))
     }
 
    // bắt đầu chạy bài toán
@@ -279,6 +291,7 @@ export function SorobanPracticeView() {
         if (!equal && inputRef.current) {
             inputRef.current.focus();
         }
+        setLogMathSoroban(getItem("logSorobanMath"));
     }, [equal]);
 
 
@@ -328,6 +341,7 @@ export function SorobanPracticeView() {
                         handleEqual={handleEqual}
                         handleCreateCalculation={handleCreateCalculation}
                         handleNoti={handleNoti}
+                        handleReport={handleReport}
                         equal={equal}
                         start={start}
                     />
@@ -390,6 +404,13 @@ export function SorobanPracticeView() {
 
             <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} />
 
+            <ReportDrawer 
+                report={report}              
+                setReport={setReport}
+                content = {logMathSoroban} 
+                infoReport={infoReport}
+                setLogMath={setLogMath} 
+            />
             <ResultDrawer
                 open={openResultDrawer}
                 // onClose={() => setOpenResultDrawer(false)}

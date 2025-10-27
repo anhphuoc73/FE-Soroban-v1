@@ -19,9 +19,23 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "src/fonts/Roboto-Regular.js"; // ✅ Import font hỗ trợ tiếng Việt
 
-export function ReportDrawer({ report, setReport, content, infoReport }) {
+export function ReportDrawer({ report, setReport, content, infoReport, setLogMath }) {
+  console.log("content", content)
   const toggleDrawer = (newOpen) => () => {
-    setReport(newOpen);
+    // setReport(newOpen);
+     setReport(newOpen);
+
+    // ✅ Khi Drawer đóng thì xóa localStorage logFingerMath
+    if (!newOpen) {
+      if(infoReport?.mathTypeName === "FingerMath"){
+        localStorage.removeItem("logFingerMath");
+        setLogMath([])
+      }
+      if(infoReport?.mathTypeName === "Soroban"){
+        localStorage.removeItem("logSorobanMath");
+        setLogMath([])
+      }
+    }
   };
 
   const correctCount = React.useMemo(
@@ -38,7 +52,7 @@ export function ReportDrawer({ report, setReport, content, infoReport }) {
   const summary = {
     date: "27/10/2025",
     name: infoReport?.fullname,
-    subject: "FingerMath",
+    subject: infoReport?.mathTypeName,
     level: infoReport?.valueLesson,
     operations: "+ ; -",
     timePerQuestion: infoReport?.timePerCalculation,
