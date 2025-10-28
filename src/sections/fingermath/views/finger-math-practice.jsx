@@ -16,6 +16,7 @@ import { ensureItem, getItem, setItem } from '../../../utils/localStorage';
 import { ResultDrawer } from '../../../components/math/result-drawer';
 import { Anime } from '../../../components/math/anime';
 import { ReportDrawer } from 'src/components/math/report-drawer';
+import { Slogan } from 'src/components/math/slogan';
 
 
 export function FingerMathPracticeView() {
@@ -349,6 +350,16 @@ export function FingerMathPracticeView() {
                         setStart={setStart}
                     />
                 </Box>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        right: { xs: 20, md: 40 }, // 👈 đổi từ left → right
+                        top: { xs: 180, md: 200 },
+                    }}
+                    >
+                    <Slogan />
+                </Box>
+
 
                 {showAnime && (
                     <Box
