@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Box, TextField, IconButton, Tooltip } from "@mui/material";
+import { Box, TextField, IconButton, Tooltip, Typography } from "@mui/material";
 import { Iconify } from "../iconify"; // tuỳ đường dẫn của bạn
 
 export default function ActionMath({
@@ -11,6 +11,7 @@ export default function ActionMath({
   handleReport,
   equal,
   start,
+  infoReport
 }) {
   const inputRef = useRef(null);
 
@@ -32,6 +33,15 @@ export default function ActionMath({
         gap: 2,
       }}
     >
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        sx={{ minWidth: 120 }}
+      >
+        <Typography fontWeight="bold">Số hạng 1: {infoReport?.firstNumber}</Typography>
+        <Typography fontWeight="bold">Số hạng 2: {infoReport?.secondNumber}</Typography>
+      </Box>
       <TextField
         inputRef={inputRef}
         label="Trả lời"
@@ -105,6 +115,18 @@ export default function ActionMath({
             </IconButton>
           </span>
         </Tooltip>
+        
+
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        sx={{ minWidth: 120 }}
+      >
+        <Typography fontWeight="bold">Cấp độ: {infoReport?.valueLesson}</Typography>
+        <Typography fontWeight="bold">Độ dài phép tính: {infoReport?.calculationLength}</Typography>
+      </Box>
+
 
       </Box>
     </Box>

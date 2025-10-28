@@ -344,6 +344,7 @@ export function SorobanPracticeView() {
                         handleReport={handleReport}
                         equal={equal}
                         start={start}
+                        infoReport={infoReport}
                     />
                 </Box>
                 <Box
@@ -409,7 +410,9 @@ export function SorobanPracticeView() {
                 setReport={setReport}
                 content = {logMathSoroban} 
                 infoReport={infoReport}
-                setLogMath={setLogMath} 
+                setLogMath={setLogMath}
+                logMath={logMath}
+                numberQuestion={numberQuestion} 
             />
             <ResultDrawer
                 open={openResultDrawer}

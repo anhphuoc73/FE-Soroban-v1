@@ -19,8 +19,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "src/fonts/Roboto-Regular.js"; // ✅ Import font hỗ trợ tiếng Việt
 
-export function ReportDrawer({ report, setReport, content, infoReport, setLogMath }) {
-  console.log("content", content)
+export function ReportDrawer({ report, setReport, content, infoReport, setLogMath, logMath, numberQuestion }) {
+  
   const toggleDrawer = (newOpen) => () => {
     // setReport(newOpen);
      setReport(newOpen);
@@ -28,12 +28,17 @@ export function ReportDrawer({ report, setReport, content, infoReport, setLogMat
     // ✅ Khi Drawer đóng thì xóa localStorage logFingerMath
     if (!newOpen) {
       if(infoReport?.mathTypeName === "FingerMath"){
-        localStorage.removeItem("logFingerMath");
-        setLogMath([])
+        if(logMath.length >= +numberQuestion){
+          localStorage.removeItem("logFingerMath");
+          setLogMath([])
+        }
+        
       }
       if(infoReport?.mathTypeName === "Soroban"){
-        localStorage.removeItem("logSorobanMath");
-        setLogMath([])
+        if(logMath.length >= +numberQuestion){
+          localStorage.removeItem("logSorobanMath");
+          setLogMath([])
+        }
       }
     }
   };
@@ -65,11 +70,11 @@ export function ReportDrawer({ report, setReport, content, infoReport, setLogMat
   };
 
   // ✅ Hàm xuất PDF
-    const handleExportPDF = () => {
+   const handleExportPDF = () => {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
 
-    // --- Font tiếng Việt ---
-    doc.setFont("Roboto-Regular");
+    // --- Đặt font tiếng Việt (Roboto-Regular.js đã import ở đầu file)
+    doc.setFont("Roboto-Regular", "normal");
     doc.setFontSize(20);
 
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -78,22 +83,23 @@ export function ReportDrawer({ report, setReport, content, infoReport, setLogMat
     doc.setFontSize(13);
     let y = 80;
 
-    // --- Thông tin tổng hợp ---
+  // --- Thông tin tổng hợp ---
     const infoLeft = [
       `Ngày báo cáo: ${summary.date}`,
       `Họ tên: ${summary.name}`,
       `Cấp độ: ${summary.level}`,
       `Phép tính: ${summary.operations}`,
       `Thời gian: ${summary.timePerQuestion} (giây/1 phép tính)`,
+      `Kết quả đúng: ${correctCount}/${summary.totalQuestions} đúng`
     ];
 
     const infoRight = [
       `Môn thi: ${summary.subject}`,
-      `Số chữ số 1: ${summary.digits1}`,
-      `Số chữ số 2: ${summary.digits2}`,
+      `Chữ số 1: ${summary.digits1}`,
+      `Chữ số 2: ${summary.digits2}`,
       `Tổng số câu: ${summary.totalQuestions}`,
       `Độ dài phép tính: ${summary.expressionLength}`,
-      `Kết quả: ${correctCount}/${summary.totalQuestions} đúng, ${wrongCount}/${summary.totalQuestions} sai`,
+      `Kết quả sai: ${wrongCount}/${summary.totalQuestions} sai`,
     ];
 
     // --- Hai cột thông tin ---
@@ -117,42 +123,59 @@ export function ReportDrawer({ report, setReport, content, infoReport, setLogMat
       row.result ? "Đúng" : "Sai",
     ]);
 
+    doc.setFont("Roboto-Regular", "normal");
+
+    // --- gọi autoTable với force font cho head bằng didParseCell
     autoTable(doc, {
-      head: [["STT", "Bieu thuc", "Ket qua dung", "Ket qua nhap", "Ket qua"]],
+      head: [["STT", "Biểu thức", "Kết quả đúng", "Kết quả nhập", "Kết quả"]],
       body: tableData,
       startY: y + 10,
       styles: {
-        font: "Roboto-Regular", // ✅ Dùng font tiếng Việt cho toàn bảng
+        font: "Roboto-Regular",
         fontSize: 11,
         cellPadding: 4,
         overflow: "linebreak",
       },
       headStyles: {
-        font: "Roboto-Regular", // ✅ Fix lỗi font tiêu đề
-        fontStyle: "bold",
+        // dùng normal nếu bạn chưa import font bold
+        font: "Roboto-Regular",
+        fontStyle: "normal",
         fillColor: [240, 240, 240],
         textColor: 20,
       },
       bodyStyles: {
-        font: "Roboto-Regular", // ✅ Fix lỗi font dữ liệu
+        font: "Roboto-Regular",
         textColor: 20,
       },
       columnStyles: {
         0: { halign: "center", cellWidth: 40 },
-        1: { cellWidth: 120 },
-        2: { cellWidth: 100 },
-        3: { cellWidth: 100 },
-        4: { halign: "center", cellWidth: 60 },
+        1: { cellWidth: 140 },
+        2: { cellWidth: 110 },
+        3: { cellWidth: 110 },
+        4: { halign: "center", cellWidth: 70 },
+      },
+      // BẮT BUỘC: ép autoTable áp dụng đúng font cho từng ô
+      didParseCell: function (data) {
+        // data.section === 'head' | 'body' | 'foot'
+        if (data.section === "head") {
+          data.cell.styles.font = "Roboto-Regular";
+          data.cell.styles.fontStyle = "normal"; // đổi sang 'bold' chỉ khi bạn import font bold
+        } else {
+          data.cell.styles.font = "Roboto-Regular";
+          data.cell.styles.fontStyle = "normal";
+        }
       },
       didDrawPage: () => {
-        // đảm bảo font không bị reset sau mỗi trang
-        doc.setFont("Roboto-Regular");
+        // Giữ font giữa các trang
+        doc.setFont("Roboto-Regular", "normal");
       },
     });
 
     // --- Xuất file ---
-    doc.save(`BaoCao_${summary.name}_${summary.date}.pdf`);
+    const safeName = summary.name?.replace(/[^\p{L}\p{N}_-]/gu, "_") || "hoc_sinh";
+    doc.save(`BaoCao_${safeName}_${summary.date}.pdf`);
   };
+
 
 
   // ✅ Nội dung Drawer
