@@ -329,6 +329,7 @@ export function FingerMathPracticeView() {
                         handleReport={handleReport}
                         equal={equal}
                         start={start}
+                        infoReport={infoReport}
                     />
                 </Box>
 
@@ -397,6 +398,8 @@ export function FingerMathPracticeView() {
                 content = {logMathFinger} 
                 infoReport={infoReport} 
                 setLogMath={setLogMath}
+                logMath={logMath}
+                numberQuestion={numberQuestion}
             />
             
             {/* <ResultDrawer
