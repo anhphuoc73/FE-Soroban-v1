@@ -549,7 +549,7 @@ export function SorobanSettingView() {
                         </Button>
                         <MathPDFDrawer
                             open={openPDFDrawer}
-                            onClick={handleOpenPDFDrawer}
+                            onClose={() => setOpenPDFDrawer(false)}
                             exercises={exercises}
                         />
                         </Box>
