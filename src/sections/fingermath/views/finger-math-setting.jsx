@@ -212,6 +212,10 @@ export function FingerMathSettingView() {
                 fullname,
                 teachername, 
             };
+            if(+firstNumber < +secondNumber){
+               toast.error('Số hạng 1 phải lớn hơn hoặc bằng số hạng 2!', { duration: 3000 });
+               return "";
+            }
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.finger_math = param;

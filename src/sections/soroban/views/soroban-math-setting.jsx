@@ -172,7 +172,10 @@ export function SorobanSettingView() {
             newErrorMessages.teachername = 'Vui lòng nhập tên giáo viên';
             isValid = false;
         }
-        
+        if(+firstNumber < +secondNumber){
+            toast.error('Số hạng 1 phải lớn hơn hoặc bằng số hạng 2!', { duration: 3000 });
+            return "";
+        }
 
         setErrorMessages(newErrorMessages);
         if (isValid) {

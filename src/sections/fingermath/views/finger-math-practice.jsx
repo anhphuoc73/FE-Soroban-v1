@@ -41,7 +41,7 @@ export function FingerMathPracticeView() {
     const [calculate, setCalculate] = useState(); 
 
     const [result, setResult] = useState([]);
-    const [showNumber, setShowNumber] = useState('');
+    const [showNumber, setShowNumber] = useState(['']);
     const [resultEqua, setResultEqua] = useState(''); // kết quả nhập
     const [initialTime , setInitialTime ] = useState(0);
     
@@ -50,6 +50,7 @@ export function FingerMathPracticeView() {
     const [stringNumber, setStringNumber] = useState("")
 
     const [showAnime, setShowAnime] = useState(false);
+    
 
     const [openResultDrawer, setOpenResultDrawer] = useState(false);
     const [resultSummary, setResultSummary] = useState({
@@ -83,19 +84,18 @@ export function FingerMathPracticeView() {
             "count": configFingerMath?.calculationLength, 
             "main": configFingerMath?.keyLesson, 
             "digits1": configFingerMath?.firstNumber, 
-            "digits2": configFingerMath?.firstNumber, 
+            "digits2": configFingerMath?.secondNumber, 
             "allowExceed": "no" 
         }
         createPracticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
-                    const expression = response?.data?.metadata?.expression 
-                    const resultExpression = response?.data?.metadata?.result
-                 
+                    // const expression = response?.data?.metadata?.expression
+                    const expression = "4 + 1 + 2 +2";
+                    const resultExpression = response?.data?.metadata?.result;
                     const numbersWithSign = expression.replace(/\s+/g, "").match(/[+-]?\d+/g);
                     
                     setStart(true)
                     if (!start) {
-                        // const calculatedResult = numbersWithSign.reduce((acc, num) => acc + (+num), 0);
                         setCalculate(resultExpression);
                         setResult([...numbersWithSign, '=?']);
                     }
@@ -230,26 +230,25 @@ export function FingerMathPracticeView() {
         setReport(prev => !prev)
         setLogMathFinger(getItem("logFingerMath"))
     }
-
-   // bắt đầu chạy bài toán
+    
     useEffect(() => {
         if (result.length > 0 && start) {
             let index = 0;
             const timer = setInterval(() => {
                 if (index < result.length) {
-                    setShowNumber(result[index]);
+                    setShowNumber([result[index]]);
                     index += 1;
                 } else {
                     clearInterval(timer);
                     setEqual(false);
                 }
+                // 
             }, timePerCalculation);
             return () => clearInterval(timer);
         }
         return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [result, start]);
-
     
     useEffect(() => {
         const batch = JSON.parse(localStorage.getItem("logFingerMath")) || [];
@@ -267,7 +266,7 @@ export function FingerMathPracticeView() {
 
     useEffect(() => {
         if (showNumber !== '') {
-            setStringNumber(prev => prev + showNumber);
+            setStringNumber(prev => prev + showNumber[0]);
         }
     }, [showNumber]);
 
