@@ -24,6 +24,7 @@ import MathPDFDrawer from 'src/components/math/math-pdf-drawer';
 import { CustomNumberInput } from 'src/components/custom-input/custom-number-input';
 import { CustomFloatInput } from 'src/components/custom-input/custom-float-input';
 import { CustomTextInput } from 'src/components/custom-input/custom-text-input';
+import { fi } from 'date-fns/locale';
 
 const levelParents = [
     { id: 1, value: "Không công thức" },
@@ -309,7 +310,13 @@ export function SorobanSettingView() {
     };
 
     
-    
+    const handleOpenPDFDrawer = () => {
+        if (+firstNumber < +secondNumber) {
+            toast.error('Số hạng 1 phải lớn hơn hoặc bằng số hạng 2!', { duration: 3000 });
+            return;
+        }
+        setOpenPDFDrawer(true);
+    }
 
     return (
         <Box
@@ -511,17 +518,6 @@ export function SorobanSettingView() {
                     </Box>
                 </Grid>
 
-                {/* <Grid item xs={12} md={6}>
-                    <Box sx={{ minWidth: 120 }}>
-                        <Box>
-                            <Button variant="contained" color="primary" sx={{mt:2}} onClick={saveConfig}>
-                                Lưu thiết lập
-                            </Button>
-                            {formError && <Typography color="error" sx={{ mt: 2 }}>{formError}</Typography>}
-                        </Box>
-                    </Box>
-                </Grid> */}
-
                 <Grid item xs={12} md={6}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
                         {/* Nút Lưu thiết lập */}
@@ -546,14 +542,14 @@ export function SorobanSettingView() {
                         <Button
                             variant="contained"
                             sx={{ backgroundColor: "#1976d2" }}
-                            onClick={() => setOpenPDFDrawer(true)}
+                            onClick={handleOpenPDFDrawer}
                             fullWidth
                         >
                             Tạo đề
                         </Button>
                         <MathPDFDrawer
                             open={openPDFDrawer}
-                            onClose={() => setOpenPDFDrawer(false)}
+                            onClick={handleOpenPDFDrawer}
                             exercises={exercises}
                         />
                         </Box>
