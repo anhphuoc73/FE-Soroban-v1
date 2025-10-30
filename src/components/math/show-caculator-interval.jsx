@@ -3,25 +3,25 @@ import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 export default function ShowCalculatorInterval({ showNumber, timePerCalculation, soundEnabled }) {
+  console.log("soundEnabled", soundEnabled)
   useEffect(() => {
-    if (!showNumber) return;
+    if (!showNumber[0]) return;
 
-    const numberFile = `/number/${showNumber}.mp3`;
+    const numberFile = `/number/${showNumber[0]}.mp3`;
     const defaultFile = `/number/tit.mp3`;
-
-     
-
     // Kiểm tra file số có tồn tại
     fetch(numberFile, { method: "HEAD" })
       .then((res) => {
         let soundFile = "";
+        
         if(timePerCalculation < 1000){
           soundFile = defaultFile
         }else{
+          console.log("timePerCalculation", timePerCalculation)
           if(+soundEnabled === 1){
-            soundFile = defaultFile
-          }else{
             soundFile = res.ok ? numberFile : defaultFile;
+          }else{
+            soundFile = defaultFile
           }
         }
         const fileToPlay = soundFile
@@ -50,7 +50,6 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation,
         };
       });
     }, [showNumber, timePerCalculation]);
-
   return (
     <Box
       sx={{
@@ -81,7 +80,7 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation,
           zIndex: 1000,
         }}
       >
-        {showNumber}
+        {showNumber[0]}
       </Typography>
     </Box>
   );

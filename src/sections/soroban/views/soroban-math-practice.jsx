@@ -47,7 +47,7 @@ export function SorobanPracticeView() {
     const [calculate, setCalculate] = useState(); // kết quả đúng
 
     const [result, setResult] = useState([]);
-    const [showNumber, setShowNumber] = useState('');
+    const [showNumber, setShowNumber] = useState(['']);
     const [resultEqua, setResultEqua] = useState(''); // kết quả nhập
     const [initialTime , setInitialTime ] = useState(0);
     const [open, setOpen] = useState(false);
@@ -78,7 +78,7 @@ export function SorobanPracticeView() {
         mutationFn: ConfigMathApi.createPracticeFingerMath
     })
 
-    const savePacticeFingerMathMutation = useMutation({
+    const savePracticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.savePracticeFingerMath
     })
 
@@ -88,19 +88,18 @@ export function SorobanPracticeView() {
             "count": congfigSorobanMath?.calculationLength, 
             "main": congfigSorobanMath?.keyLesson, 
             "digits1": congfigSorobanMath?.firstNumber, 
-            "digits2": congfigSorobanMath?.firstNumber, 
+            "digits2": congfigSorobanMath?.secondNumber, 
             "allowExceed": allowExceed
         }
         createPacticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
-                    const expression = response?.data?.metadata?.expression 
-                    const resultExpression = response?.data?.metadata?.result
-                 
+                    // const expression = response?.data?.metadata?.expression
+                    const expression = "4 + 1 + 2 +2";
+                    const resultExpression = response?.data?.metadata?.result;
                     const numbersWithSign = expression.replace(/\s+/g, "").match(/[+-]?\d+/g);
                     
                     setStart(true)
                     if (!start) {
-                        // const calculatedResult = numbersWithSign.reduce((acc, num) => acc + (+num), 0);
                         setCalculate(resultExpression);
                         setResult([...numbersWithSign, '=?']);
                     }
@@ -208,7 +207,7 @@ export function SorobanPracticeView() {
                 // lưu db ==> chưa thực hiện
                 const math = logSorobanMath
                 // setLogMath(math)
-                savePacticeFingerMathMutation.mutate({...math},{
+                savePracticeFingerMathMutation.mutate({...math},{
                         onSuccess: (response) => {
                             setResultSummary({
                                 total: math.length,
@@ -247,18 +246,16 @@ export function SorobanPracticeView() {
             let index = 0;
             const timer = setInterval(() => {
                 if (index < result.length) {
-                    setShowNumber(result[index]);
+                    setShowNumber([result[index]]);
                     index += 1;
                 } else {
                     clearInterval(timer);
                     setEqual(false);
                 }
+                // 
             }, timePerCalculation);
-
             return () => clearInterval(timer);
         }
-
-        // Trường hợp else
         return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [result, start]);
@@ -283,7 +280,7 @@ export function SorobanPracticeView() {
 
     useEffect(() => {
         if (showNumber !== '') {
-            setStringNumber(prev => prev + showNumber);
+            setStringNumber(prev => prev + showNumber[0]);
         }
     }, [showNumber]);
 
@@ -425,7 +422,7 @@ export function SorobanPracticeView() {
                 logMath={logMath}
                 numberQuestion={numberQuestion} 
             />
-            <ResultDrawer
+            {/* <ResultDrawer
                 open={openResultDrawer}
                 // onClose={() => setOpenResultDrawer(false)}
                 onClose={() => {
@@ -445,7 +442,7 @@ export function SorobanPracticeView() {
                 correct={resultSummary.correct}
                 wrong={resultSummary.wrong}
                 data={logMath}
-            />
+            /> */}
               
         </Box>
         

@@ -212,6 +212,10 @@ export function FingerMathSettingView() {
                 fullname,
                 teachername, 
             };
+            if(+firstNumber < +secondNumber){
+               toast.error('Số hạng 1 phải lớn hơn hoặc bằng số hạng 2!', { duration: 3000 });
+               return "";
+            }
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.finger_math = param;
@@ -228,42 +232,49 @@ export function FingerMathSettingView() {
     } 
 
     const options = useMemo(() => {
-            const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
+        const max = Math.max(Number(firstNumber) || 0, Number(secondNumber) || 0) || 1;
+
+        // Nếu idChild === 4 => chỉ 1 lựa chọn: '4' lặp max lần
+        if (childId === 4) {
+            const value = "4".repeat(max);
+            return [{ value, label: `${value}` }];
+        }
+        if(childId === 5 || childId === 6 || childId === 7 || childId === 8 || childId === 9){
+            const value = "9".repeat(max);
+            return [{ value, label: `${value}` }];
+        }
+
+        // Trường hợp bình thường
+        if (max === 1) {
+            return [{ value: "9", label: "1 chữ số (9)" }];
+        }
+
+        const firstValue = "9".repeat(max);
+        const secondValue = "9".repeat(max + 1);
+
+        return [
+            { value: firstValue, label: `${firstValue}` },
+            { value: secondValue, label: `${secondValue}` },
+        ];
+    }, [firstNumber, secondNumber, childId]);
     
-            // Nếu idChild === 4 => chỉ 1 lựa chọn: '4' lặp max lần
-            if (childId === 4) {
-                const value = "4".repeat(max);
-                return [{ value, label: `${value}` }];
+    useEffect(() => {
+        if (options?.length > 0) {
+            // chỉ set lại nếu rangeResult chưa chọn hoặc không còn hợp lệ
+            const exists = options.some(o => o.value === rangeResult);
+            if (!exists) {
+                setRangeResult(options[0].value);
             }
-            if(childId === 5 || childId === 6 || childId === 7 || childId === 8 || childId === 9){
-                const value = "9".repeat(max);
-                return [{ value, label: `${value}` }];
-            }
-    
-            // Trường hợp bình thường
-            if (max === 1) {
-                return [{ value: "9", label: "1 chữ số (9)" }];
-            }
-    
-            const firstValue = "9".repeat(max);
-            const secondValue = "9".repeat(max + 1);
-    
-            return [
-                { value: firstValue, label: `${firstValue}` },
-                { value: secondValue, label: `${secondValue}` },
-            ];
-        }, [firstNumber, secondNumber, childId]);
-    
-        useEffect(() => {
-            if (options?.length > 0) {
-                // chỉ set lại nếu rangeResult chưa chọn hoặc không còn hợp lệ
-                const exists = options.some(o => o.value === rangeResult);
-                if (!exists) {
-                    setRangeResult(options[0].value);
-                }
-            }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [options]);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [options]);
+    const handleOpenPDFDrawer = () => {
+        if (+firstNumber < +secondNumber) {
+            toast.error('Số hạng 1 phải lớn hơn hoặc bằng số hạng 2!', { duration: 3000 });
+            return;
+        }
+        setOpenPDFDrawer(true);
+    }
     return (
         <Box
             sx={{
@@ -459,14 +470,14 @@ export function FingerMathSettingView() {
                         <Button
                             variant="contained"
                             sx={{ backgroundColor: "#1976d2" }}
-                            onClick={() => setOpenPDFDrawer(true)}
+                            onClick={handleOpenPDFDrawer}
                             fullWidth
                         >
                             Tạo đề
                         </Button>
                         <MathPDFDrawer
                             open={openPDFDrawer}
-                            onClose={() => setOpenPDFDrawer(false)}
+                            onClick={handleOpenPDFDrawer}
                             exercises={exercises}
                         />
                         </Box>
