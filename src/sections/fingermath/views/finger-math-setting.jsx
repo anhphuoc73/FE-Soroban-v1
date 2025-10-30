@@ -477,7 +477,7 @@ export function FingerMathSettingView() {
                         </Button>
                         <MathPDFDrawer
                             open={openPDFDrawer}
-                            onClick={handleOpenPDFDrawer}
+                            onClose={() => setOpenPDFDrawer(false)}
                             exercises={exercises}
                         />
                         </Box>

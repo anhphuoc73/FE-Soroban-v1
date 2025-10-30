@@ -194,10 +194,56 @@ export default function MathPDFDrawer({ open, onClose, exercises }) {
         },
       }}
     >
+      <Button
+        onClick={onClose}
+        sx={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          minWidth: "36px",
+          width: "36px",
+          height: "36px",
+          borderRadius: "50%",
+          backgroundColor: "#f44336",
+          color: "#fff",
+          fontWeight: "bold",
+          fontSize: "16px",
+          "&:hover": {
+            backgroundColor: "#d32f2f",
+          },
+        }}
+      >
+    ×
+  </Button>
       <Box>
         <Typography variant="h6" gutterBottom>
           📘 Danh sách bài toán
         </Typography>
+        <Box>
+        <Button
+          variant="contained"
+          onClick={exportPDF}
+          sx={{
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            textTransform: "none",
+            mr: 1,
+          }}
+        >
+          📄 PDF
+        </Button>
+        <Button
+          variant="contained"
+          onClick={exportExcel}
+          sx={{
+            backgroundColor: "#118d57",
+            color: "#fff",
+            textTransform: "none",
+          }}
+        >
+          📊 Excel
+        </Button>
+      </Box>
 
         <Box
           sx={{
@@ -212,7 +258,7 @@ export default function MathPDFDrawer({ open, onClose, exercises }) {
           ))}
         </Box>
 
-        <Button
+        {/* <Button
           variant="contained"
           onClick={exportPDF}
           sx={{
@@ -234,7 +280,7 @@ export default function MathPDFDrawer({ open, onClose, exercises }) {
           }}
         >
           📄 Xuất Excel
-        </Button>
+        </Button> */}
       </Box>
     </Drawer>
   );
