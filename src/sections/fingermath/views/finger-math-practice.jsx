@@ -89,8 +89,8 @@ export function FingerMathPracticeView() {
         }
         createPracticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
-                    // const expression = response?.data?.metadata?.expression
-                    const expression = "4 + 1 + 2 +2";
+                    const expression = response?.data?.metadata?.expression
+                    // const expression = "4 + 1 + 2 +2";
                     const resultExpression = response?.data?.metadata?.result;
                     const numbersWithSign = expression.replace(/\s+/g, "").match(/[+-]?\d+/g);
                     
