@@ -200,7 +200,7 @@ export function FingerMathSettingView() {
                 timeAnswer,
                 firstNumber,
                 secondNumber,
-                keyLesson: childId,
+                keyLesson: [90, 130, 170, 260, 300, 390, 430].includes(childId) ? Number(String(childId).slice(0, -1)) : childId,
                 valueLesson: levelChild.find(item => item.idChild === childId)?.value,
                 displayStyle,
                 displayStyleName: displayStyle === 1 ? "chữ số" : displayStyle === 2 ? "bàn tay" : "",
@@ -515,6 +515,10 @@ const levelChilds = [
             {
                 idChild: 9,
                 value: "Không công thức từ (0-9)"
+            },
+            {
+                idChild: 90,
+                value: "Tổng hợp không công thức"
             }
         ]
     },
@@ -537,6 +541,10 @@ const levelChilds = [
                 idChild: 13,
                 value: "Anh bạn nhỏ cộng 1"
             },
+            {
+                idChild: 130,
+                value: "Tổng hợp anh bạn nhỏ cộng"
+            },
         ]
     },
     {
@@ -557,6 +565,10 @@ const levelChilds = [
             {
                 idChild: 17,
                 value: "Anh bạn nhỏ trừ 1"
+            },
+            {
+                idChild: 170,
+                value: "Tổng hợp anh bạn nhỏ trừ"
             },
         ]
     },
@@ -599,6 +611,10 @@ const levelChilds = [
                 idChild: 26,
                 value: "Anh bạn lớn cộng 1"
             },
+            {
+                idChild: 260,
+                value: "Tổng hợp anh bạn lớn cộng"
+            },
         ]
     },
     {
@@ -619,6 +635,10 @@ const levelChilds = [
             {
                 idChild: 30,
                 value: "Anh bạn thân cộng 6"
+            },
+            {
+                idChild: 300,
+                value: "Tổng hợp anh bạn thân cộng"
             },
         ]
     },
@@ -661,6 +681,10 @@ const levelChilds = [
                 idChild: 39,
                 value: "Anh bạn lớn trừ 1"
             },
+            {
+                idChild: 390,
+                value: "Tổng hợp anh bạn lớn trừ"
+            },
         ]
     },
     {
@@ -681,6 +705,10 @@ const levelChilds = [
             {
                 idChild: 43,
                 value: "Anh bạn thân trừ 6"
+            },
+            {
+                idChild: 430,
+                value: "Tổng hợp anh bạn thân trừ"
             },
         ]
     },
