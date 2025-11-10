@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import { ConfigMathApi } from 'src/apis/configMath-api';
 import { Iconify } from 'src/components/iconify';
-import { Timer } from './timer';
+import { Timer } from '../../../components/math/timer';
 
 import { ShowCaculator } from '../../../components/math/show-caculator';
 import { ResultMathView } from '../../../components/math/result';

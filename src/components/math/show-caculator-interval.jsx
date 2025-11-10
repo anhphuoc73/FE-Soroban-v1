@@ -1,40 +1,52 @@
 /* eslint-disable no-shadow */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
-export default function ShowCalculatorInterval({ showNumber, timePerCalculation, soundEnabled }) {
-  console.log("soundEnabled", soundEnabled)
+export default function ShowCalculatorInterval({
+  showNumber,
+  timePerCalculation,
+  soundEnabled,
+}) {
+  const [gradient, setGradient] = useState(
+    "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)" // đỏ mặc định
+  );
+
   useEffect(() => {
     if (!showNumber[0]) return;
 
+    setGradient((prev) =>
+      prev.includes("#ff4b4b")
+        ? "linear-gradient(90deg, #0033cc, #0055ff, #3399ff)" 
+        : "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)"
+    );
+
+    //Phát âm thanh
     const numberFile = `/number/${showNumber[0]}.mp3`;
     const defaultFile = `/number/tit.mp3`;
-    // Kiểm tra file số có tồn tại
+
     fetch(numberFile, { method: "HEAD" })
       .then((res) => {
         let soundFile = "";
-        
-        if(timePerCalculation < 1000){
-          soundFile = defaultFile
-        }else{
-          console.log("timePerCalculation", timePerCalculation)
-          if(+soundEnabled === 1){
+
+        if (timePerCalculation < 1000) {
+          soundFile = defaultFile;
+        } else {
+          if (+soundEnabled === 1) {
             soundFile = res.ok ? numberFile : defaultFile;
-          }else{
-            soundFile = defaultFile
+          } else {
+            soundFile = defaultFile;
           }
         }
-        const fileToPlay = soundFile
-        const audio = new Audio(fileToPlay);
 
-        // Nếu timePerCalculation < 1000, phát nhanh gấp đôi
+        const audio = new Audio(soundFile);
+
         if (timePerCalculation < 1000) {
-          audio.playbackRate = 2.0;
+          audio.playbackRate = 2.0; // phát nhanh gấp đôi
         }
 
         audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
 
-        // Dừng audio khi component unmount hoặc thay đổi showNumber
+        // cleanup khi số đổi hoặc component unmount
         return () => {
           audio.pause();
           audio.currentTime = 0;
@@ -49,7 +61,8 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation,
           audio.currentTime = 0;
         };
       });
-    }, [showNumber, timePerCalculation]);
+  }, [showNumber, timePerCalculation, soundEnabled]);
+
   return (
     <Box
       sx={{
@@ -74,9 +87,10 @@ export default function ShowCalculatorInterval({ showNumber, timePerCalculation,
             lg: 300,
           },
           fontWeight: 500,
-          background: "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)",
+          background: gradient,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
+          transition: "background 0.5s ease",
           zIndex: 1000,
         }}
       >

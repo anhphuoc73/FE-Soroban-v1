@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import { ConfigMathApi } from 'src/apis/configMath-api';
 import { Iconify } from 'src/components/iconify';
-import { Timer } from './timer';
+import { Timer } from '../../../components/math/timer';
 
 import { ShowCaculator } from '../../../components/math/show-caculator';
 import { ResultMathView } from '../../../components/math/result';
@@ -90,7 +90,7 @@ export function FingerMathPracticeView() {
         createPracticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression
-                    // const expression = "4 + 1 + 2 +2";
+                    // const expression = "4 + 1 + 1 + 2 +2";
                     const resultExpression = response?.data?.metadata?.result;
                     const numbersWithSign = expression.replace(/\s+/g, "").match(/[+-]?\d+/g);
                     
@@ -318,7 +318,7 @@ export function FingerMathPracticeView() {
                     }}
                 
                 > 
-                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} />
+                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled} />
                     
                     <ActionMath
                         resultEqua={resultEqua}
