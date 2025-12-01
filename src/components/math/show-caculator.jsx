@@ -9,7 +9,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 import { Iconify } from "src/components/iconify";
 
-export function ShowCaculator({ open, setOpen, stringNumber }) {
+export function ShowCaculator({ open, setOpen, stringNumber, caculation, keyLesson }) {
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -44,7 +44,12 @@ export function ShowCaculator({ open, setOpen, stringNumber }) {
           wordBreak: "break-word",
         }}
       >
-        {stringNumber}
+        {/* {stringNumber} */}
+        {caculation == 1 ? (
+          stringNumber   // chỉ hiện số
+        ) : (
+          <span dangerouslySetInnerHTML={{ __html: stringNumber }} />
+        )}
       </Typography>
     </Box>
   );

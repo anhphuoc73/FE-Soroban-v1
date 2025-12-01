@@ -55,12 +55,17 @@ export function SorobanSettingView() {
     const [secondNumber, setSecondNumber] = React.useState(congfigSorobanMath?.secondNumber); // số hạng thứ 2
     const [soundEnabled, setSoundEnabled] = React.useState(congfigSorobanMath?.soundEnabled);
     const [rangeResult, setRangeResult] = React.useState(congfigSorobanMath?.rangeResult);
+
     const [displayStyle, setDisplayStyle] = React.useState(congfigSorobanMath?.displayStyle);
+    const [caculation, setCaculation] = React.useState(congfigSorobanMath?.caculation || '1');
+
     const [allowExceed, setAllowExceed] = React.useState(congfigSorobanMath?.allowExceed);
     const [openPDFDrawer, setOpenPDFDrawer] = useState(false);
 
     const [fullname, setFullname] = React.useState(congfigSorobanMath?.fullname);
     const [teachername, setTeachername] = React.useState(congfigSorobanMath?.teachername);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [childIdMultiplication, setChildIdMultiplication] = useState(congfigSorobanMath?.keyLesson);
 
     const [formError, setFormError] = useState('');
     const [errorMessages, setErrorMessages] = useState({
@@ -98,9 +103,10 @@ export function SorobanSettingView() {
         }
     }
     
-    const handleDisplayStyle = (event) => {
-        setDisplayStyle(event.target.value)
+    const handleCalculation = (event) => {
+        setCaculation(event.target.value)
     }
+
   
 
     const updateConfigMathMutation = useMutation({
@@ -127,6 +133,22 @@ export function SorobanSettingView() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openPDFDrawer]);
+
+    useEffect(() => {
+        if (caculation === "2") {
+            setIsDisabled(true);
+        } else {
+            setIsDisabled(false);
+        }
+    }, [caculation])
+    useEffect(() => {
+        if (caculation === "2") {
+            // Nếu chưa có giá trị → set mặc định id đầu tiên
+            if (!childIdMultiplication) {
+                setChildIdMultiplication(levelChildMultiplicationdivision[0].idChild);
+            }
+        }
+    }, [caculation]);
 
     const saveConfig = () => {
         const newErrorMessages = {
@@ -180,17 +202,33 @@ export function SorobanSettingView() {
 
         setErrorMessages(newErrorMessages);
         if (isValid) {
+            const selectedChildId = caculation === "1" ? childId : childIdMultiplication;
+            const selectedLevelList =
+                caculation === "1"
+                    ? levelChild
+                    : levelChildMultiplicationdivision;
+            const selectedLessonValue =
+                selectedLevelList.find(item => item.idChild === selectedChildId)?.value || "";
+            const selectedKeyLesson = 
+                caculation === "1"
+                    ? ([90, 130, 170, 260, 300, 390, 430].includes(childId)
+                        ? Number(String(childId).slice(0, -1))
+                        : childId)
+                    : selectedChildId;
             const param = {
                 mathTypeId: 2,
                 mathTypeName: "soroban",
+                caculation,
                 numberQuestion,
                 calculationLength,
                 timePerCalculation,
                 timeAnswer,
                 firstNumber,
                 secondNumber,
-                keyLesson: [90, 130, 170, 260, 300, 390, 430].includes(childId) ? Number(String(childId).slice(0, -1)) : childId,
-                valueLesson: levelChild.find(item => item.idChild === childId)?.value,
+                // keyLesson: [90, 130, 170, 260, 300, 390, 430].includes(childId) ? Number(String(childId).slice(0, -1)) : childId,
+                // valueLesson: levelChild.find(item => item.idChild === childId)?.value,
+                keyLesson: selectedKeyLesson,
+                valueLesson: selectedLessonValue,
                 displayStyle,
                 displayStyleName: displayStyle === 1 ? "chữ số" : displayStyle === 2 ? "bàn tay" : "",
                 rangeResult,
@@ -202,7 +240,6 @@ export function SorobanSettingView() {
                 fullname,
                 teachername,
             };
-           
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.soroban_math = param;
@@ -405,17 +442,33 @@ export function SorobanSettingView() {
                         value: item.id,
                         label: item.value,
                     }))}
+                     disabled={caculation === "2"}
                 />
 
-                <CustomSelectBasic
-                    label="Cấp độ con"
-                    value={childId}
-                    onChange={handleLevelChildChange}
-                    options={levelChild.map(item => ({
-                        value: item.idChild,
-                        label: item.value,
-                    }))}
-                />
+                {caculation === '1' && (
+                    <CustomSelectBasic
+                        label="Cấp độ con"
+                        value={childId}
+                        onChange={handleLevelChildChange}
+                        options={levelChild.map(item => ({
+                            value: item.idChild,
+                            label: item.value,
+                        }))}
+                    />
+                )}
+
+                {caculation === "2" && (
+                    <CustomSelectBasic
+                        label="Cấp độ con"
+                        value={childIdMultiplication} 
+                        onChange={(e) => setChildIdMultiplication(e.target.value)} 
+                        options={levelChildMultiplicationdivision.map(item => ({
+                            value: item.idChild,
+                            label: item.value,
+                        }))}
+                    />
+                )}
+                
 
                 <CustomSelectBasic
                     label="Số hạng 1"
@@ -490,7 +543,7 @@ export function SorobanSettingView() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
                         <Box sx={{
                             display: "flex", alignItems:"center", pt:"10px"
@@ -503,8 +556,28 @@ export function SorobanSettingView() {
                                 value={displayStyle}
                                 onChange={handleDisplayStyle}
                             >
-                                <FormControlLabel value="1" control={<Radio />} label="Chữ số" />
-                                <FormControlLabel value="2" control={<Radio />} label="Hình bàn tay" />
+                                <FormControlLabel value="1" control={<Radio />} label="Cộng trừ" />
+                                <FormControlLabel value="2" control={<Radio />} label="Nhân chia" />
+                            </RadioGroup>
+                        </Box>
+                    </Box>
+                </Grid> */}
+
+                <Grid item xs={12} md={6}>
+                    <Box sx={{ minWidth: 120 }}>
+                        <Box sx={{
+                            display: "flex", alignItems:"center", pt:"10px"
+                        }}>
+                            <FormLabel component="legend">Phép tính:</FormLabel>
+                        </Box>
+                        <Box margin="normal" sx={{display: "flex", alignItems:"center",}}>
+                            <RadioGroup
+                                row
+                                value={caculation}
+                                onChange={handleCalculation}
+                            >
+                                <FormControlLabel value="1" control={<Radio />} label="Cộng trừ" />
+                                <FormControlLabel value="2" control={<Radio />} label="Nhân chia" />
                             </RadioGroup>
                         </Box>
                     </Box>
@@ -530,21 +603,24 @@ export function SorobanSettingView() {
                         </Box>
 
                         {/* Nút Tạo đề */}
-                        <Box sx={{ minWidth: 120 }}>
-                        <Button
-                            variant="contained"
-                            sx={{ backgroundColor: "#1976d2" }}
-                            onClick={handleOpenPDFDrawer}
-                            fullWidth
-                        >
-                            Tạo đề
-                        </Button>
-                        <MathPDFDrawer
-                            open={openPDFDrawer}
-                            onClose={() => setOpenPDFDrawer(false)}
-                            exercises={exercises}
-                        />
-                        </Box>
+                        {caculation ==1 && (
+                            <Box sx={{ minWidth: 120 }}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: "#1976d2" }}
+                                    onClick={handleOpenPDFDrawer}
+                                    fullWidth
+                                >
+                                    Tạo đề
+                                </Button>
+                                <MathPDFDrawer
+                                    open={openPDFDrawer}
+                                    onClose={() => setOpenPDFDrawer(false)}
+                                    exercises={exercises}
+                                />
+                            </Box>
+                        ) 
+                        }
                     </Box>
                 </Grid>
             </Grid> 
@@ -776,4 +852,31 @@ const levelChilds = [
         ]
     },
 ];
+
+const levelChildMultiplicationdivision = [
+    {
+        idChild: 500,
+        value: "Bình Phương"
+    },
+    {
+        idChild: 501,
+        value: "Lập phương"
+    },
+    {
+        idChild: 502,
+        value: "Nhân 2 số hạng"
+    },
+    {
+        idChild: 503,
+        value: "Căn bậc 2"
+    },
+    {
+        idChild: 504,
+        value: "Căn bậc 3"
+    },
+    {
+        idChild: 505,
+        value: "Chia 2 số hạng"
+    }
+]
 

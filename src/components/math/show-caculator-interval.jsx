@@ -6,61 +6,116 @@ export default function ShowCalculatorInterval({
   showNumber,
   timePerCalculation,
   soundEnabled,
+  caculation,
+  keyLesson
 }) {
   const [gradient, setGradient] = useState(
     "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)" // đỏ mặc định
   );
 
   useEffect(() => {
-    if (!showNumber[0]) return;
+    if(caculation == 1){
+      if (!showNumber[0]) return;
 
-    setGradient((prev) =>
-      prev.includes("#ff4b4b")
-        ? "linear-gradient(90deg, #0033cc, #0055ff, #3399ff)" 
-        : "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)"
-    );
+      setGradient((prev) =>
+        prev.includes("#ff4b4b")
+          ? "linear-gradient(90deg, #0033cc, #0055ff, #3399ff)" 
+          : "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)"
+      );
 
-    //Phát âm thanh
-    const numberFile = `/number/${showNumber[0]}.mp3`;
-    const defaultFile = `/number/tit.mp3`;
+      //Phát âm thanh
+      const numberFile = `/number/${showNumber[0]}.mp3`;
+      const defaultFile = `/number/tit.mp3`;
 
-    fetch(numberFile, { method: "HEAD" })
-      .then((res) => {
-        let soundFile = "";
+      fetch(numberFile, { method: "HEAD" })
+        .then((res) => {
+          let soundFile = "";
 
-        if (timePerCalculation < 1000) {
-          soundFile = defaultFile;
-        } else {
-          if (+soundEnabled === 1) {
-            soundFile = res.ok ? numberFile : defaultFile;
-          } else {
+          if (timePerCalculation < 1000) {
             soundFile = defaultFile;
+          } else {
+            if (+soundEnabled === 1) {
+              soundFile = res.ok ? numberFile : defaultFile;
+            } else {
+              soundFile = defaultFile;
+            }
           }
-        }
 
-        const audio = new Audio(soundFile);
+          const audio = new Audio(soundFile);
 
-        if (timePerCalculation < 1000) {
-          audio.playbackRate = 2.0; // phát nhanh gấp đôi
-        }
+          if (timePerCalculation < 1000) {
+            audio.playbackRate = 2.0; // phát nhanh gấp đôi
+          }
 
-        audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+          audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
 
-        // cleanup khi số đổi hoặc component unmount
-        return () => {
-          audio.pause();
-          audio.currentTime = 0;
-        };
-      })
-      .catch((err) => {
-        console.error("Lỗi kiểm tra file:", err);
-        const audio = new Audio(defaultFile);
-        audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
-        return () => {
-          audio.pause();
-          audio.currentTime = 0;
-        };
-      });
+          // cleanup khi số đổi hoặc component unmount
+          return () => {
+            audio.pause();
+            audio.currentTime = 0;
+          };
+        })
+        .catch((err) => {
+          console.error("Lỗi kiểm tra file:", err);
+          const audio = new Audio(defaultFile);
+          audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+          return () => {
+            audio.pause();
+            audio.currentTime = 0;
+          };
+        });
+    }else{
+      if (!showNumber[0]) return;
+
+      setGradient((prev) =>
+        prev.includes("#ff4b4b")
+          ? "linear-gradient(90deg, #0033cc, #0055ff, #3399ff)" 
+          : "linear-gradient(90deg, #ff4b4b, #ff6666, #ff9999)"
+      );
+
+      //Phát âm thanh
+      const numberFile = `/number/${showNumber[0]}.mp3`;
+      const defaultFile = `/number/tit.mp3`;
+
+      fetch(numberFile, { method: "HEAD" })
+        .then((res) => {
+          let soundFile = "";
+
+          if (timePerCalculation < 1000) {
+            soundFile = defaultFile;
+          } else {
+            if (+soundEnabled === 1) {
+              soundFile = res.ok ? numberFile : defaultFile;
+            } else {
+              soundFile = defaultFile;
+            }
+          }
+
+          const audio = new Audio(soundFile);
+
+          if (timePerCalculation < 1000) {
+            audio.playbackRate = 2.0; // phát nhanh gấp đôi
+          }
+
+          audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+
+          // cleanup khi số đổi hoặc component unmount
+          return () => {
+            audio.pause();
+            audio.currentTime = 0;
+          };
+        })
+        .catch((err) => {
+          console.error("Lỗi kiểm tra file:", err);
+          const audio = new Audio(defaultFile);
+          audio.play().catch((err) => console.error("Không phát được âm thanh:", err));
+          return () => {
+            audio.pause();
+            audio.currentTime = 0;
+          };
+        });
+    }
+    
   }, [showNumber, timePerCalculation, soundEnabled]);
 
   return (
@@ -94,8 +149,17 @@ export default function ShowCalculatorInterval({
           zIndex: 1000,
         }}
       >
-        {showNumber[0]}
+        {caculation == 1 ? (
+          showNumber[0]   // chỉ hiện số
+        ) : (
+          keyLesson === 500 || keyLesson === 501 ||   keyLesson === 503 || keyLesson === 504 ? (
+              <span dangerouslySetInnerHTML={{ __html: showNumber }} />
+          ) : (
+              showNumber[0]   
+          )
+        )}
       </Typography>
+
     </Box>
   );
 }

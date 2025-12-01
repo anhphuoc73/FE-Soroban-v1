@@ -6,11 +6,8 @@ export function Timer({initialTime, setInitialTime, equal, setEqual, start, setS
     useEffect(() => {
         if (!equal && start) {
             if (initialTime <= 0) {
-                // setEqual(true);
-                // setStart(false);
                 return;
             }
-
             const timerId = setInterval(() => {
                 setInitialTime((prev) => {
                     const next = prev - 1;
@@ -18,11 +15,8 @@ export function Timer({initialTime, setInitialTime, equal, setEqual, start, setS
                     return next;
                 });
             }, 1000);
-
-            // eslint-disable-next-line consistent-return
             return () => clearInterval(timerId);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [equal, initialTime, start]);
 
     const playNumberSound = (num) => {

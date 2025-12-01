@@ -15,6 +15,12 @@ export const UserApi = {
   addUser(body) {
     return http.post(`${endpoints.user.addUser}`, body);
   },
+
+  createListUser(body) {
+    return http.post(`${endpoints.user.createListUser}`, body);
+  },
+
+  
   listUser(params) {
     return http.get(`${endpoints.user.listUser}`, { params });
   },

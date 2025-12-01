@@ -44,6 +44,8 @@ export function FingerMathPracticeView() {
     const [showNumber, setShowNumber] = useState(['']);
     const [resultEqua, setResultEqua] = useState(''); // kết quả nhập
     const [initialTime , setInitialTime ] = useState(0);
+    const [caculation, setCaculation] = useState(configFingerMath?.caculation || 1)
+    const [keyLesson, setKeyLession] = useState(configFingerMath?.keyLesson)
     
     const [open, setOpen] = useState(false);
     const [report, setReport] = useState(false);
@@ -85,7 +87,8 @@ export function FingerMathPracticeView() {
             "main": configFingerMath?.keyLesson, 
             "digits1": configFingerMath?.firstNumber, 
             "digits2": configFingerMath?.secondNumber, 
-            "allowExceed": "no" 
+            "allowExceed": "no",
+            "caculation": caculation,
         }
         createPracticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
@@ -318,7 +321,7 @@ export function FingerMathPracticeView() {
                     }}
                 
                 > 
-                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled} />
+                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled} caculation={caculation} keyLesson={keyLesson} />
                     
                     <ActionMath
                         resultEqua={resultEqua}
@@ -410,6 +413,8 @@ export function FingerMathPracticeView() {
                 setLogMath={setLogMath}
                 logMath={logMath}
                 numberQuestion={numberQuestion}
+                caculation={caculation}
+                keyLesson={keyLesson} 
             />
             
             {/* <ResultDrawer
