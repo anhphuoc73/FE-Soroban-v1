@@ -17,12 +17,21 @@ import {
 import { Iconify } from "src/components/iconify";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import "src/fonts/Roboto-Regular.js"; // ✅ Import font hỗ trợ tiếng Việt
+import "src/fonts/Roboto-Regular.js"; 
 
-export function ReportDrawer({ report, setReport, content, infoReport, setLogMath, logMath, numberQuestion }) {
+export function ReportDrawer({ 
+  report, 
+  setReport, 
+  content, 
+  infoReport, 
+  setLogMath, 
+  logMath, 
+  numberQuestion,
+  caculation, 
+  keyLesson
+ }) {
   
   const toggleDrawer = (newOpen) => () => {
-    // setReport(newOpen);
      setReport(newOpen);
 
     // ✅ Khi Drawer đóng thì xóa localStorage logFingerMath
@@ -277,7 +286,34 @@ export function ReportDrawer({ report, setReport, content, infoReport, setLogMat
               {content.map((row, idx) => (
                 <TableRow key={idx}>
                   <TableCell>{idx + 1}</TableCell>
-                  <TableCell>{row.expression}</TableCell>
+                  {/* <TableCell>{row.expression}</TableCell> */}
+                  <TableCell>
+                    {(() => {
+                      const allowed = [500, 501, 503, 504];
+
+                      // caculation === 1 -> render HTML bình thường (hiện được mũ)
+                      if (caculation === 1) {
+                        return <span dangerouslySetInnerHTML={{ __html: row.expression }} />;
+                      }
+
+                      // caculation === 2 -> thay bằng bình phương / lập phương nếu đúng keyLesson
+                      if (caculation === 2 && allowed.includes(keyLesson)) {
+                        const match = row.expression.match(/(\d+)<sup>(\d+)<\/sup>/);
+
+                        if (match) {
+                          const base = match[1];
+                          const exp = match[2];
+
+                          if (exp === "2") return `${base} bình phương = ?`;
+                          if (exp === "3") return `${base} lập phương = ?`;
+                        }
+                      }
+
+                      // mặc định -> vẫn render HTML (để hiện mũ)
+                      return <span dangerouslySetInnerHTML={{ __html: row.expression }} />;
+                    })()}
+                  </TableCell>
+
                   <TableCell>{row.resultExpression}</TableCell>
                   <TableCell>{row.inputResult}</TableCell>
                   <TableCell

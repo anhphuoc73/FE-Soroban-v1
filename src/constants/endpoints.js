@@ -40,6 +40,7 @@ export const endpoints = {
   configMath : {
     fingerMath: `${CONFIG.serverUrl}/configMath/config-finger-math`,
     createPracticeFingerMath: `${CONFIG.serverUrl}/configMath/practice-finger-math`,
+    practiceFingerMathMultiplyDivision: `${CONFIG.serverUrl}/configMath/practice-finger-math-multiply-division`,
     createPracticeFingerMathList: `${CONFIG.serverUrl}/configMath/practice-finger-math-list`,
     savePracticeFingerMath: `${CONFIG.serverUrl}/configMath/save-practice-finger-math`,
     historyMathByUser: `${CONFIG.serverUrl}/configMath/history-math-by-user`,
@@ -55,6 +56,8 @@ export const endpoints = {
     checkExistEmail: `${CONFIG.serverUrl}/user/check-exist-email`,
 
     addUser: `${CONFIG.serverUrl}/user`,
+    createListUser: `${CONFIG.serverUrl}/user/create-list-user`,
+    
     listUser: `${CONFIG.serverUrl}/user`,
     updateUser: `${CONFIG.serverUrl}/user`,
     updatePassword: `${CONFIG.serverUrl}/user/update-password`,

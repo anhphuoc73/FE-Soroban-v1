@@ -9,6 +9,9 @@ export const ConfigMathApi = {
   createPracticeFingerMath(body) {
     return http.post(`${endpoints.configMath.createPracticeFingerMath}`, body);
   },
+  practiceFingerMathMultiplyDivision(body) {
+    return http.post(`${endpoints.configMath.practiceFingerMathMultiplyDivision}`, body);
+  },
   createPracticeFingerMathList(body) {
     return http.post(`${endpoints.configMath.createPracticeFingerMathList}`, body);
   },

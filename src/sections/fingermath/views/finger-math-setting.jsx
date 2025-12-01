@@ -59,6 +59,9 @@ export function FingerMathSettingView() {
     const [fullname, setFullname] = React.useState(congfigFingerMath?.fullname);
     const [teachername, setTeachername] = React.useState(congfigFingerMath?.teachername);
 
+    const [caculation, setCaculation] = React.useState(congfigFingerMath?.caculation || '1');
+    const [isDisabled, setIsDisabled] = useState(false);
+
     const [openPDFDrawer, setOpenPDFDrawer] = useState(false);
 
     const [formError, setFormError] = useState('');
@@ -95,6 +98,9 @@ export function FingerMathSettingView() {
                 setRangeResult(44)
             }
         }
+    }
+    const handleCalculation = (event) => {
+        setCaculation(event.target.value)
     }
     const handleFirstNumberChange = (event) => {
         setFirstNumber(event.target.value);
@@ -426,7 +432,7 @@ export function FingerMathSettingView() {
                     </Box>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
                         <Box sx={{
                             display: "flex", alignItems:"center", pt:"10px"
@@ -441,6 +447,25 @@ export function FingerMathSettingView() {
                             >
                                 <FormControlLabel value="1" control={<Radio />} label="Chữ số" />
                                 <FormControlLabel value="2" control={<Radio />} label="Hình bàn tay" />
+                            </RadioGroup>
+                        </Box>
+                    </Box>
+                </Grid> */}
+
+                <Grid item xs={12} md={6}>
+                    <Box sx={{ minWidth: 120 }}>
+                        <Box sx={{
+                            display: "flex", alignItems:"center", pt:"10px"
+                        }}>
+                            <FormLabel component="legend">Phép tính:</FormLabel>
+                        </Box>
+                        <Box margin="normal" sx={{display: "flex", alignItems:"center",}}>
+                            <RadioGroup
+                                row
+                                value={caculation}
+                                onChange={handleCalculation}
+                            >
+                                <FormControlLabel value="1" control={<Radio />} label="Cộng trừ" />
                             </RadioGroup>
                         </Box>
                     </Box>

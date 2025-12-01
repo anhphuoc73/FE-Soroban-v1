@@ -1,4 +1,8 @@
+import React from "react";
 import { useState } from 'react';
+import { Drawer } from "@mui/material";
+import { Box } from "@mui/material";
+import UploadUserDrawerView from "./upload-user-drawer-view";
 import {
   Grid,
   TextField,
@@ -41,8 +45,18 @@ export function UserAddView() {
     birthDay: ""
   });
 
+ 
+
   const { user } = useAuthContext();
   const [errors, setErrors] = useState({});
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
 
   const fields = [
     { key: 'centerName', label: 'Tên trung tâm' },
@@ -51,7 +65,6 @@ export function UserAddView() {
     { key: 'birthDay', label: 'Sinh nhật', type: 'date' },
     { key: 'address', label: 'Địa chỉ cụ thể' },
     { key: 'expiredDate', label: 'Ngày hết hạn', type: 'date' },
-    
   ];
 
   const handleChange = (key) => (event) => {
@@ -108,6 +121,14 @@ export function UserAddView() {
       ...prev,
       centerId: event.target.value, 
     }));
+  };
+
+  const handleDrawerUploadUser = () => {
+    setOpenDrawer(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setOpenDrawer(false);
   };
 
   return (
@@ -223,6 +244,9 @@ export function UserAddView() {
         >
           Thêm tài khoản
         </Button>
+        
+        <UploadUserDrawerView />
+
       </CardContent>
     </Card>
   );

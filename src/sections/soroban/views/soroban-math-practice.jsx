@@ -18,19 +18,11 @@ import { Anime } from '../../../components/math/anime';
 import { ReportDrawer } from 'src/components/math/report-drawer';
 import { Slogan } from 'src/components/math/slogan';
 
-// import { use } from 'react';
-
-
-
-
-
 export function SorobanPracticeView() {
     const profileLocalStorage = getProfileFromLS()
     const congfigSorobanMath = profileLocalStorage?.soroban_math
     
     const timePerCalculation = +congfigSorobanMath?.timePerCalculation * 1000
-    
-
     // logFingerMath
     const [logMath, setLogMath] = useState(getItem("logSorobanMath") || [])
     const [logMathSoroban, setLogMathSoroban] = useState(getItem("logSorobanMath") || [])
@@ -39,6 +31,9 @@ export function SorobanPracticeView() {
 
     const [numberQuestion, setNumberQuestion] = useState(congfigSorobanMath?.numberQuestion)
     const [soundEnabled, setSoundEnabled] = useState(congfigSorobanMath?.soundEnabled)
+    const [caculation, setCaculation] = useState(congfigSorobanMath?.caculation)
+    const [keyLesson, setKeyLession] = useState(congfigSorobanMath?.keyLesson)
+ 
 
     const [isDisabled, setIsDisabled] = useState(true);
     const [equal, setEqual] = useState(true);
@@ -78,10 +73,14 @@ export function SorobanPracticeView() {
         mutationFn: ConfigMathApi.createPracticeFingerMath
     })
 
+    const practiceFingerMathMultiplyDivisionMutation = useMutation({
+        mutationFn: ConfigMathApi.practiceFingerMathMultiplyDivision
+    })
+
     const savePracticeFingerMathMutation = useMutation({
         mutationFn: ConfigMathApi.savePracticeFingerMath
     })
-
+    
     const handleCreateCalculation = () => {
         const allowExceed = congfigSorobanMath?.allowExceed === 1 ? "yes" : congfigSorobanMath?.allowExceed === 0 ? "no": "no";
         const param = {
@@ -89,12 +88,13 @@ export function SorobanPracticeView() {
             "main": congfigSorobanMath?.keyLesson, 
             "digits1": congfigSorobanMath?.firstNumber, 
             "digits2": congfigSorobanMath?.secondNumber, 
-            "allowExceed": allowExceed
+            "allowExceed": allowExceed,
+            "caculation": caculation,
         }
-        createPacticeFingerMathMutation.mutate({...param},{
+        if (congfigSorobanMath?.caculation === "1") {
+            createPacticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression
-                    // const expression = "4 + 1 + 2 +2";
                     const resultExpression = response?.data?.metadata?.result;
                     const numbersWithSign = expression.replace(/\s+/g, "").match(/[+-]?\d+/g);
                     
@@ -124,7 +124,63 @@ export function SorobanPracticeView() {
                     toast.error(error?.data?.message || 'Có lỗi xảy ra', { duration: 2000 });
                 },
             }
-        )
+        )}else{
+            practiceFingerMathMultiplyDivisionMutation.mutate({...param},{
+                onSuccess: (response) => {
+                    if(keyLesson == 500 || keyLesson == 501 || keyLesson == 503 || keyLesson == 504){
+                        const expression = response?.data?.metadata?.expression
+                        const resultExpression = response?.data?.metadata?.result;
+                        setShowNumber(expression)
+                        setStringNumber(expression);
+                        setStart(true)
+                        setEqual(false)
+                        setCalculate(resultExpression);
+                        setInitialTime(congfigSorobanMath?.timeAnswer);
+                        const batch = ensureItem("logSorobanMath", []);
+                        const newId = batch.length > 0 ? batch[batch.length - 1].id + 1 : 1;
+                        setIdMath(newId)
+                        const fingerMathLocalStoge = {
+                            id: newId, 
+                            expression, 
+                            resultExpression, 
+                        };
+                        batch.push(fingerMathLocalStoge);
+                        setItem("logSorobanMath", batch);
+                    }else if(keyLesson == 502 || keyLesson == 505){
+                        const expression = response?.data?.metadata?.expression
+                        const resultExpression = response?.data?.metadata?.result;
+                        const numbersWithSign = expression.replace(/\s+/g, "").match(/[x:]?\d+/g);
+                        
+                        setStart(true)
+                        if (!start) {
+                            setCalculate(resultExpression);
+                            setResult([...numbersWithSign, '=?']);
+                        }
+                        setInitialTime(congfigSorobanMath?.timeAnswer);
+                        setStringNumber("");
+
+                        const batch = ensureItem("logSorobanMath", []);
+                        // Tính id mới (nếu mảng rỗng thì id = 1)
+                        const newId = batch.length > 0 ? batch[batch.length - 1].id + 1 : 1;
+                        setIdMath(newId)
+                        // lưu vào localStore
+                        const fingerMathLocalStoge = {
+                            id: newId, 
+                            expression, 
+                            resultExpression, 
+                        };
+                        batch.push(fingerMathLocalStoge);
+                        // Lưu lại vào localStorage
+                        setItem("logSorobanMath", batch);
+                        
+                    }
+                },
+                onError: (error) => {
+                    toast.error(error?.data?.message || 'Có lỗi xảy ra', { duration: 2000 });
+                },
+            }
+        )}
+        
     }
 
     const playClapSoundIncorrect = () => {
@@ -162,70 +218,132 @@ export function SorobanPracticeView() {
         });
     };
     const handleEqual = () => {
-        let logSorobanMath = []
-        logSorobanMath = getItem("logSorobanMath")
-        if (!equal) {
-           
-            if(+calculate === +resultEqua){
-                logSorobanMath = logSorobanMath.map(item => {
-                    if (item.id === idMath) {
-                        return {
-                            ...item,
-                            inputResult: +resultEqua,
-                            result: 1, 
-                        };
+        if(caculation == 1){
+            let logSorobanMath = []
+            logSorobanMath = getItem("logSorobanMath")
+            if (!equal) {
+                if(+calculate === +resultEqua){
+                    logSorobanMath = logSorobanMath.map(item => {
+                        if (item.id === idMath) {
+                            return {
+                                ...item,
+                                inputResult: +resultEqua,
+                                result: 1, 
+                            };
+                        }
+                        return item;
+                    });
+                    if(initialTime > 0){
+                        playClapSoundIncorrect()
                     }
-                    return item;
-                });
-                if(initialTime > 0){
-                    playClapSoundIncorrect()
+                    console.log("Nhập kết quả đúng");
+                }else{
+                    logSorobanMath = logSorobanMath.map(item => {
+                        if (item.id === idMath) {
+                            return {
+                                ...item,
+                                inputResult: +resultEqua,
+                                result: 0, 
+                            };
+                        }
+                        return item;
+                    });
+                    playClapSoundWrong();
+                    console.log("Nhập kết quả sai");
                 }
-                console.log("Nhập kết quả đúng");
-            }else{
-                logSorobanMath = logSorobanMath.map(item => {
-                    if (item.id === idMath) {
-                        return {
-                            ...item,
-                            inputResult: +resultEqua,
-                            result: 0, 
-                        };
-                    }
-                    return item;
-                });
-                playClapSoundWrong();
-                console.log("Nhập kết quả sai");
+                const updatedLogFingerMath = updateLogMathResult(logSorobanMath, idMath, +resultEqua, +calculate);
+
+
+                setItem("logSorobanMath", logSorobanMath);
+                setLogMath(updatedLogFingerMath);
+                setResultEqua('');
+                setEqual(true); 
+                setStart(false);
+                if(+idMath === +numberQuestion){
+                    // lưu db ==> chưa thực hiện
+                    const math = logSorobanMath
+                    // setLogMath(math)
+                    savePracticeFingerMathMutation.mutate({...math},{
+                            onSuccess: (response) => {
+                                setResultSummary({
+                                    total: math.length,
+                                    correct: math.filter(item => item.result === 1).length,
+                                    wrong: math.filter(item => item.result === 0).length
+                                });
+
+                                // setOpenResultDrawer(true); // 👉 mở Drawer
+                                setReport(true)
+                                
+                            },
+                        }
+                    )
+                    
+                }
+            } else {
+                console.log("Button is disabled");
             }
-            const updatedLogFingerMath = updateLogMathResult(logSorobanMath, idMath, +resultEqua, +calculate);
-
-
-            setItem("logSorobanMath", logSorobanMath);
-            setLogMath(updatedLogFingerMath);
-            setResultEqua('');
-            setEqual(true); 
-            setStart(false);
-            if(+idMath === +numberQuestion){
-                // lưu db ==> chưa thực hiện
-                const math = logSorobanMath
-                // setLogMath(math)
-                savePracticeFingerMathMutation.mutate({...math},{
-                        onSuccess: (response) => {
-                            setResultSummary({
-                                total: math.length,
-                                correct: math.filter(item => item.result === 1).length,
-                                wrong: math.filter(item => item.result === 0).length
-                            });
-
-                            // setOpenResultDrawer(true); // 👉 mở Drawer
-                            setReport(true)
-                            
-                        },
+        }else{
+            let logSorobanMath = []
+            logSorobanMath = getItem("logSorobanMath")
+            if (!equal) {
+                if(+calculate === +resultEqua){
+                    logSorobanMath = logSorobanMath.map(item => {
+                        if (item.id === idMath) {
+                            return {
+                                ...item,
+                                inputResult: +resultEqua,
+                                result: 1, 
+                            };
+                        }
+                        return item;
+                    });
+                    if(initialTime > 0){
+                        playClapSoundIncorrect()
                     }
-                )
-                
+                    console.log("Nhập kết quả đúng");
+                }else{
+                    logSorobanMath = logSorobanMath.map(item => {
+                        if (item.id === idMath) {
+                            return {
+                                ...item,
+                                inputResult: +resultEqua,
+                                result: 0, 
+                            };
+                        }
+                        return item;
+                    });
+                    playClapSoundWrong();
+                    console.log("Nhập kết quả sai");
+                }
+                const updatedLogFingerMath = updateLogMathResult(logSorobanMath, idMath, +resultEqua, +calculate);
+
+
+                setItem("logSorobanMath", logSorobanMath);
+                setLogMath(updatedLogFingerMath);
+                setResultEqua('');
+                setEqual(true); 
+                setStart(false);
+                if(+idMath === +numberQuestion){
+                    const math = logSorobanMath
+                    savePracticeFingerMathMutation.mutate({...math},{
+                            onSuccess: (response) => {
+                                setResultSummary({
+                                    total: math.length,
+                                    correct: math.filter(item => item.result === 1).length,
+                                    wrong: math.filter(item => item.result === 0).length
+                                });
+                                setReport(true)
+                                
+                            },
+                        }
+                    )
+                    
+                }
+            } else {
+                console.log("Button is disabled");
             }
-        } else {
-            console.log("Button is disabled");
         }
+        
     }
 
     const handleOnchangeEqua = (e) => {
@@ -242,21 +360,41 @@ export function SorobanPracticeView() {
 
    // bắt đầu chạy bài toán
     useEffect(() => {
-        if (result.length > 0 && start) {
-            let index = 0;
-            const timer = setInterval(() => {
-                if (index < result.length) {
-                    setShowNumber([result[index]]);
-                    index += 1;
-                } else {
-                    clearInterval(timer);
-                    setEqual(false);
+        if(caculation == 1){
+            if (result.length > 0 && start) {
+                let index = 0;
+                const timer = setInterval(() => {
+                    if (index < result.length) {
+                        setShowNumber([result[index]]);
+                        index += 1;
+                    } else {
+                        clearInterval(timer);
+                        setEqual(false);
+                    }
+                    // 
+                }, timePerCalculation);
+                return () => clearInterval(timer);
+            }
+            return () => {};
+        }else{
+            if(keyLesson == 502 || keyLesson == 505){
+                if (result.length > 0 && start) {
+                    let index = 0;
+                    const timer = setInterval(() => {
+                        if (index < result.length) {
+                            setShowNumber([result[index]]);
+                            index += 1;
+                        } else {
+                            clearInterval(timer);
+                            setEqual(false);
+                        }
+                        // 
+                    }, timePerCalculation);
+                    return () => clearInterval(timer);
                 }
-                // 
-            }, timePerCalculation);
-            return () => clearInterval(timer);
+                return () => {};
+            }
         }
-        return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [result, start]);
 
@@ -280,7 +418,14 @@ export function SorobanPracticeView() {
 
     useEffect(() => {
         if (showNumber !== '') {
-            setStringNumber(prev => prev + showNumber[0]);
+            if(caculation == 1){
+                setStringNumber(prev => prev + showNumber[0]);
+            }
+            if(caculation == 2){
+                if(keyLesson == 502 || keyLesson == 505){
+                    setStringNumber(prev => prev + showNumber[0]);
+                }
+            }
         }
     }, [showNumber]);
 
@@ -295,8 +440,6 @@ export function SorobanPracticeView() {
 
 
     return (
-        // numberQuestion, setNumberQuestion
-        // logMath, setLogMath
         <Box sx={{display: 'flex',gap: 2}}>
             <ResultMathView 
                 numberQuestion={numberQuestion} 
@@ -331,7 +474,7 @@ export function SorobanPracticeView() {
                     }}
                 
                 >
-                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled}  />
+                    <ShowCalculatorInterval showNumber={showNumber} timePerCalculation={timePerCalculation} soundEnabled={soundEnabled} caculation={caculation} keyLesson={keyLesson} />
                     
 
                     <ActionMath
@@ -409,9 +552,7 @@ export function SorobanPracticeView() {
                 )}
             </Box> 
 
-           
-
-            <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} />
+            <ShowCaculator open={open} setOpen={setOpen} stringNumber={stringNumber} caculation={caculation} keyLesson={keyLesson} />
 
             <ReportDrawer 
                 report={report}              
@@ -420,7 +561,9 @@ export function SorobanPracticeView() {
                 infoReport={infoReport}
                 setLogMath={setLogMath}
                 logMath={logMath}
-                numberQuestion={numberQuestion} 
+                numberQuestion={numberQuestion}
+                caculation={caculation}
+                keyLesson={keyLesson} 
             />
             {/* <ResultDrawer
                 open={openResultDrawer}
