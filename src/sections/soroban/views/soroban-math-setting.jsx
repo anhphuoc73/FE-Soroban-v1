@@ -215,7 +215,7 @@ export function SorobanSettingView() {
                         ? Number(String(childId).slice(0, -1))
                         : childId)
                     : selectedChildId;
-            const param = {
+            let param = {
                 mathTypeId: 2,
                 mathTypeName: "soroban",
                 caculation,
@@ -240,7 +240,6 @@ export function SorobanSettingView() {
                 fullname,
                 teachername,
             };
-            console.log("param", param)
             if (caculation == 1) {
                 if (param?.keyLesson < 4 || param?.keyLesson > 43) {
                     //throw new Error("Chưa chọn cấp độ");
@@ -253,6 +252,10 @@ export function SorobanSettingView() {
                     toast.error('Chưa chọn cấp độ', { duration: 2000 });
                     return;
                 }
+            }
+            if(caculation == 1){
+                param.soundEnabled = 0;
+                param.soundEnabledName = "Không";
             }
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
