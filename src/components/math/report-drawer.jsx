@@ -377,19 +377,22 @@ export function ReportDrawer({
               Báo cáo thống kê
             </Typography>
           </Box>
-          <Button
-            onClick={handleExportPDF}
-            variant="contained"
-            color="secondary"
-            sx={{
-              backgroundColor: "#fff",
-              color: "primary.main",
-              fontWeight: 600,
-              "&:hover": { backgroundColor: "#e0e0e0" },
-            }}
-          >
-            Xuất PDF
-          </Button>
+          {caculation === 1 && (
+            <Button
+              onClick={handleExportPDF}
+              variant="contained"
+              color="secondary"
+              sx={{
+                backgroundColor: "#fff",
+                color: "primary.main",
+                fontWeight: 600,
+                "&:hover": { backgroundColor: "#e0e0e0" },
+              }}
+            >
+              Xuất PDF
+            </Button>
+          )}
+          
         </Box>
 
         <Divider />
