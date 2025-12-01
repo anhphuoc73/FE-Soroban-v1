@@ -240,6 +240,20 @@ export function SorobanSettingView() {
                 fullname,
                 teachername,
             };
+            console.log("param", param)
+            if (caculation == 1) {
+                if (param?.keyLesson < 4 || param?.keyLesson > 43) {
+                    //throw new Error("Chưa chọn cấp độ");
+                    toast.error('Chưa chọn cấp độ', { duration: 2000 });
+                    return;
+                }
+            }
+            if (caculation == 2) {
+                if (param?.keyLesson < 500 || param?.keyLesson > 505) {
+                    toast.error('Chưa chọn cấp độ', { duration: 2000 });
+                    return;
+                }
+            }
             updateConfigMathMutation.mutate({...param, id: "123"},{
                     onSuccess: (response) => {
                         profileLocalStorage.soroban_math = param;
