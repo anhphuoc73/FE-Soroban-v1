@@ -14,7 +14,7 @@ export default function ShowCalculatorInterval({
   );
 
   useEffect(() => {
-    if(caculation == 1){
+    if(+caculation === 1){
       if (!showNumber[0]) return;
 
       setGradient((prev) =>
@@ -41,6 +41,7 @@ export default function ShowCalculatorInterval({
             }
           }
 
+          
           const audio = new Audio(soundFile);
 
           if (timePerCalculation < 1000) {

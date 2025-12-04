@@ -209,11 +209,9 @@ export function SorobanSettingView() {
                     : levelChildMultiplicationdivision;
             const selectedLessonValue =
                 selectedLevelList.find(item => item.idChild === selectedChildId)?.value || "";
-            const selectedKeyLesson = 
+            const selectedKeyLesson =
                 caculation === "1"
-                    ? ([90, 130, 170, 260, 300, 390, 430].includes(childId)
-                        ? Number(String(childId).slice(0, -1))
-                        : childId)
+                    ? childId
                     : selectedChildId;
             let param = {
                 mathTypeId: 2,
@@ -239,21 +237,23 @@ export function SorobanSettingView() {
                 allowExceed,
                 fullname,
                 teachername,
-            };
-            if (caculation == 1) {
-                if (param?.keyLesson < 4 || param?.keyLesson > 43) {
-                    //throw new Error("Chưa chọn cấp độ");
+            }
+            if (+caculation === 1) {
+                const key = +param?.keyLesson;
+                const allowedSpecial = [90, 130, 170, 260, 300, 390, 430];
+                if ((key < 4 || key > 43) && !allowedSpecial.includes(key)) {
                     toast.error('Chưa chọn cấp độ', { duration: 2000 });
                     return;
                 }
             }
-            if (caculation == 2) {
-                if (param?.keyLesson < 500 || param?.keyLesson > 505) {
+            if (+caculation === 2) {
+                const key = +param?.keyLesson;
+                if (key < 500 || key > 505) {
                     toast.error('Chưa chọn cấp độ', { duration: 2000 });
                     return;
                 }
             }
-            if(caculation == 1){
+            if(+caculation === 2){
                 param.soundEnabled = 0;
                 param.soundEnabledName = "Không";
             }
@@ -372,6 +372,7 @@ export function SorobanSettingView() {
         setOpenPDFDrawer(true);
     }
 
+    
     return (
         <Box
             sx={{
@@ -462,7 +463,7 @@ export function SorobanSettingView() {
                      disabled={caculation === "2"}
                 />
 
-                {caculation === '1' && (
+                {(+caculation === 1) && (
                     <CustomSelectBasic
                         label="Cấp độ con"
                         value={childId}
@@ -474,7 +475,7 @@ export function SorobanSettingView() {
                     />
                 )}
 
-                {caculation === "2" && (
+                {(+caculation === 2) && (
                     <CustomSelectBasic
                         label="Cấp độ con"
                         value={childIdMultiplication} 
@@ -522,11 +523,25 @@ export function SorobanSettingView() {
                 />
 
                 
+                {/* <CustomSelectBasic
+                    label="Âm thanh"
+                    value={soundEnabled}
+                    onChange={(e) => {
+                        setSoundEnabled(Number(e.target.value));  // ép về số
+                        setErrorMessages((prev) => ({ ...prev, soundEnabled: "" }));
+                    }}
+                    options={[
+                        { value: 0, label: "Không" },
+                        { value: 1, label: "Có" },
+                    ]}
+                    error={errorMessages.soundEnabled}
+                /> */}
+
                 <CustomSelectBasic
                     label="Âm thanh"
                     value={soundEnabled}
                     onChange={(e) => {
-                        setSoundEnabled(e.target.value);
+                        setSoundEnabled(Number(e.target.value));
                         setErrorMessages((prev) => ({ ...prev, soundEnabled: "" }));
                     }}
                     options={[
@@ -535,6 +550,7 @@ export function SorobanSettingView() {
                     ]}
                     error={errorMessages.soundEnabled}
                 />
+
 
                 <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
