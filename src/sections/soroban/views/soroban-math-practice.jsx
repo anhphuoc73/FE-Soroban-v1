@@ -91,7 +91,7 @@ export function SorobanPracticeView() {
             "allowExceed": allowExceed,
             "caculation": caculation,
         }
-        if (congfigSorobanMath?.caculation === "1") {
+        if (+congfigSorobanMath?.caculation === 1) {
             createPacticeFingerMathMutation.mutate({...param},{
                 onSuccess: (response) => {
                     const expression = response?.data?.metadata?.expression
