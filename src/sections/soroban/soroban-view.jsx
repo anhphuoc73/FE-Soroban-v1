@@ -19,12 +19,22 @@ const TABS = [
   { 
     value: 'practice', 
     label: 'Luyện tập', 
-    icon: <Icon name={ICON_NAME.report} sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }} /> 
+    icon: (
+      <Icon
+        name={ICON_NAME.report}
+        sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }}
+      />
+    ),
   },
   { 
     value: 'setting', 
     label: 'Thiết lập tham số', 
-    icon: <Icon name={ICON_NAME.chat} sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }} /> 
+    icon: (
+      <Icon
+        name={ICON_NAME.chat}
+        sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }}
+      />
+    ),
   },
 ];
 
@@ -42,7 +52,7 @@ export function SorobanView() {
   };
 
   return (
-    <Box>
+    <Box sx={{ mt: '10px' }}>
       <Box
         display="flex"
         justifyContent={{ xs: 'flex-start', md: 'flex-start' }}
