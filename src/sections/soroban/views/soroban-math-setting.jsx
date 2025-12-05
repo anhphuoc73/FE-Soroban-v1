@@ -284,6 +284,18 @@ export function SorobanSettingView() {
             const value = "9".repeat(max);
             return [{ value, label: `${value}` }];
         }
+       
+        if (
+            (childId >= 18 && childId <= 26) ||
+            (childId >= 27 && childId <= 30) ||
+            childId === 260 ||
+            childId === 300 
+        ) {
+            if(firstNumber === 1 && secondNumber === 1){
+                const value = "99".repeat(max);
+                return [{ value, label: `${value}` }];
+            }
+        }
 
         // Trường hợp bình thường
         if (max === 1) {
