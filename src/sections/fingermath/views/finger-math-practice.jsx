@@ -359,7 +359,7 @@ export function FingerMathPracticeView() {
                         top: { xs: 180, md: 200 },
                     }}
                     >
-                    <Slogan />
+                    {/* <Slogan /> */}
                 </Box>
 
 
