@@ -31,8 +31,8 @@ export const Logo = forwardRef(
         component="img"
         // src={`${CONFIG.assetsDir}/logo/logo-single.svg`}
         src={`${CONFIG.assetsDir}/logo/logo_soroban.png`}
-        width="65%"
-        height="65%"
+        width="100%"
+        height="100%"
       />
     );
 
@@ -47,11 +47,11 @@ export const Logo = forwardRef(
     );
     
     const baseSize = {
-      width: width ?? 120,
-      height: height ?? 120,
+      width: width ?? 60,   // giảm từ 120 xuống 60
+      height: height ?? 60,
       ...(!isSingle && {
-        width: width ?? 102,
-        height: height ?? 36,
+        width: width ?? 80,
+        height: height ?? 28,
       }),
     };
 
@@ -67,7 +67,6 @@ export const Logo = forwardRef(
           flexShrink: 0,
           display: 'inline-flex',
           verticalAlign: 'middle',
-          mt: '60px',
           ml: "20px",
           ...(disableLink && { pointerEvents: 'none' }),
           ...sx,
