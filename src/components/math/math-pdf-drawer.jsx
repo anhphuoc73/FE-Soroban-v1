@@ -114,72 +114,185 @@ export default function MathPDFDrawer({ open, onClose, exercises }) {
   };
 
   // 📊 Xuất Excel
+  // const exportExcel = () => {
+  //   const data = [];
+  //   data.push(["Toán tư duy Soroban"]);
+  //   data.push([]);
+  //   data.push(["STT", "Bài toán"]);
+
+  //   exercises.forEach((ex, index) => {
+  //     data.push([index + 1, ex.join(" ")]);
+  //   });
+
+  //   const worksheet = XLSX.utils.aoa_to_sheet(data);
+  //   worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
+
+  //   const range = XLSX.utils.decode_range(worksheet["!ref"]);
+  //   for (let R = 0; R <= range.e.r; ++R) {
+  //     for (let C = 0; C <= range.e.c; ++C) {
+  //       const cell = worksheet[XLSX.utils.encode_cell({ r: R, c: C })];
+  //       if (!cell) continue;
+
+  //       if (R === 0) {
+  //         cell.s = {
+  //           font: { bold: true, sz: 18, color: { rgb: "1F497D" } },
+  //           alignment: { horizontal: "center", vertical: "center" },
+  //         };
+  //       } else if (R === 2) {
+  //         cell.s = {
+  //           font: { bold: true, sz: 13 },
+  //           alignment: { horizontal: "center", vertical: "center" },
+  //           border: {
+  //             top: { style: "thin", color: { rgb: "AAAAAA" } },
+  //             bottom: { style: "thin", color: { rgb: "AAAAAA" } },
+  //             left: { style: "thin", color: { rgb: "AAAAAA" } },
+  //             right: { style: "thin", color: { rgb: "AAAAAA" } },
+  //           },
+  //         };
+  //       } else if (R > 2) {
+  //         cell.s = {
+  //           font: { sz: 12 },
+  //           alignment: {
+  //             horizontal: C === 0 ? "center" : "left",
+  //             vertical: "center",
+  //           },
+  //           border: {
+  //             top: { style: "thin", color: { rgb: "DDDDDD" } },
+  //             bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+  //             left: { style: "thin", color: { rgb: "DDDDDD" } },
+  //             right: { style: "thin", color: { rgb: "DDDDDD" } },
+  //           },
+  //         };
+  //       }
+  //     }
+  //   }
+
+  //   worksheet["!cols"] = [{ wch: 5 }, { wch: 25 }];
+
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Bài tập");
+  //   const excelBuffer = XLSX.write(workbook, {
+  //     bookType: "xlsx",
+  //     type: "array",
+  //   });
+  //   const blob = new Blob([excelBuffer], {
+  //     type: "application/octet-stream",
+  //   });
+  //   saveAs(blob, "baitoan.xlsx");
+  // };
+
   const exportExcel = () => {
-    const data = [];
-    data.push(["Toán tư duy Soroban"]);
-    data.push([]);
-    data.push(["STT", "Bài toán"]);
+  const data = [];
 
-    exercises.forEach((ex, index) => {
-      data.push([index + 1, ex.join(" ")]);
-    });
+  // Tiêu đề
+  data.push(["Toán tư duy Soroban"]);
+  data.push([]);
 
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
+  const maxColsPerRow = 20; // 20 cột mỗi nhóm
+  const rowsPerExercise = Math.max(...exercises.map(ex => ex.length));
 
-    const range = XLSX.utils.decode_range(worksheet["!ref"]);
-    for (let R = 0; R <= range.e.r; ++R) {
-      for (let C = 0; C <= range.e.c; ++C) {
-        const cell = worksheet[XLSX.utils.encode_cell({ r: R, c: C })];
-        if (!cell) continue;
+  let currentCol = 0;
 
-        if (R === 0) {
-          cell.s = {
-            font: { bold: true, sz: 18, color: { rgb: "1F497D" } },
-            alignment: { horizontal: "center", vertical: "center" },
-          };
-        } else if (R === 2) {
-          cell.s = {
-            font: { bold: true, sz: 13 },
-            alignment: { horizontal: "center", vertical: "center" },
-            border: {
-              top: { style: "thin", color: { rgb: "AAAAAA" } },
-              bottom: { style: "thin", color: { rgb: "AAAAAA" } },
-              left: { style: "thin", color: { rgb: "AAAAAA" } },
-              right: { style: "thin", color: { rgb: "AAAAAA" } },
-            },
-          };
-        } else if (R > 2) {
-          cell.s = {
-            font: { sz: 12 },
-            alignment: {
-              horizontal: C === 0 ? "center" : "left",
-              vertical: "center",
-            },
-            border: {
-              top: { style: "thin", color: { rgb: "DDDDDD" } },
-              bottom: { style: "thin", color: { rgb: "DDDDDD" } },
-              left: { style: "thin", color: { rgb: "DDDDDD" } },
-              right: { style: "thin", color: { rgb: "DDDDDD" } },
-            },
-          };
-        }
+  // Trả về số nguyên (KHÔNG thêm dấu + ở đây)
+  const formatNumber = (num) => {
+    if (num === "" || num === null || num === undefined) return "";
+    const n = Number(num);
+    if (isNaN(n)) return num; // nếu không phải số
+    return n;
+  };
+
+  // Chuẩn bị dữ liệu 2D
+  exercises.forEach((exercise, exerciseIndex) => {
+    // Nếu vượt quá 20 cột → xuống nhóm mới
+    if (exerciseIndex % maxColsPerRow === 0) {
+      if (exerciseIndex !== 0) {
+        data.push([]);
+        data.push([]);
       }
+
+      // Tạo block mới
+      for (let r = 0; r < rowsPerExercise; r++) {
+        data.push(new Array(maxColsPerRow).fill(""));
+      }
+
+      currentCol = 0;
     }
 
-    worksheet["!cols"] = [{ wch: 5 }, { wch: 25 }];
+    // Ghi từng dòng
+    for (let r = 0; r < rowsPerExercise; r++) {
+      const rowIndex = data.length - rowsPerExercise + r;
+      data[rowIndex][currentCol] = formatNumber(exercise[r] ?? "");
+    }
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Bài tập");
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], {
-      type: "application/octet-stream",
-    });
-    saveAs(blob, "baitoan.xlsx");
-  };
+    currentCol++;
+  });
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+  // Merge tiêu đề
+  worksheet["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: maxColsPerRow - 1 } }
+  ];
+
+  // Styling
+  const range = XLSX.utils.decode_range(worksheet["!ref"]);
+  for (let R = 0; R <= range.e.r; ++R) {
+    for (let C = 0; C <= range.e.c; ++C) {
+      const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+      const cell = worksheet[cellAddress];
+      if (!cell) continue;
+
+      if (R === 0) {
+        // Tiêu đề
+        cell.s = {
+          font: { bold: true, sz: 18, color: { rgb: "1F497D" } },
+          alignment: { horizontal: "center", vertical: "center" },
+        };
+      } else if (R > 1) {
+        // Nếu là số → để Excel hiểu đúng
+        if (!isNaN(cell.v) && cell.v !== "") {
+          cell.t = "n"; // ép kiểu number
+        }
+
+        // Style chung
+        cell.s = {
+          font: { sz: 13 },
+          alignment: {
+            horizontal: "right",
+            vertical: "center",
+          },
+          border: {
+            top: { style: "thin", color: { rgb: "DDDDDD" } },
+            bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+            left: { style: "thin", color: { rgb: "DDDDDD" } },
+            right: { style: "thin", color: { rgb: "DDDDDD" } },
+          },
+          // ⭐ Quan trọng: Excel tự thêm dấu + và căn thẳng hàng
+          numFmt: "+0;-0;0",
+        };
+      }
+    }
+  }
+
+  // Set width
+  worksheet["!cols"] = Array(maxColsPerRow).fill({ wch: 8 });
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Bài tập");
+
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(blob, "baitoan.xlsx");
+};
+
+
+
+  
+
+
+
+
+
 
   return (
     <Drawer

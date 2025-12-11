@@ -31,8 +31,8 @@ export const Logo = forwardRef(
         component="img"
         // src={`${CONFIG.assetsDir}/logo/logo-single.svg`}
         src={`${CONFIG.assetsDir}/logo/logo_soroban.png`}
-        width="100%"
-        height="100%"
+        width="65%"
+        height="65%"
       />
     );
 
@@ -67,6 +67,8 @@ export const Logo = forwardRef(
           flexShrink: 0,
           display: 'inline-flex',
           verticalAlign: 'middle',
+          mt: '60px',
+          ml: "20px",
           ...(disableLink && { pointerEvents: 'none' }),
           ...sx,
         }}
