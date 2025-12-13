@@ -79,6 +79,12 @@ export function SorobanSettingView() {
         teachername: "",
     });
 
+    const [infoDownload, setInfoDownload] = useState({
+        fullname: congfigSorobanMath?.fullname,
+        teachername: congfigSorobanMath?.teachername,
+        valueLesson: levelChild.find(item => item.idChild === childId)?.value,
+    })
+
     const handleLevelParentChange = (event) => {
         const idParent = event.target.value;
         setParentId(idParent)
@@ -662,6 +668,7 @@ export function SorobanSettingView() {
                                     open={openPDFDrawer}
                                     onClose={() => setOpenPDFDrawer(false)}
                                     exercises={exercises}
+                                    infoDownload={infoDownload}
                                 />
                             </Box>
                         ) 

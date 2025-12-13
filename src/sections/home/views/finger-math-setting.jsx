@@ -481,6 +481,7 @@ export function FingerMathSettingView() {
                             open={openPDFDrawer}
                             onClose={() => setOpenPDFDrawer(false)}
                             exercises={exercises}
+                            infoDownload={infoDownload}
                         />
                         </Box>
                     </Box>
