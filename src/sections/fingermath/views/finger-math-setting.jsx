@@ -76,6 +76,13 @@ export function FingerMathSettingView() {
         classname: '',      
     });
 
+    const [infoDownload, setInfoDownload] = useState({
+        fullname: congfigFingerMath?.fullname,
+        teachername: congfigFingerMath?.teachername,
+        valueLesson: levelChild.find(item => item.idChild === childId)?.value,
+    })
+    
+
     const handleLevelParentChange = (event) => {
         const idParent = event.target.value;
         setParentId(idParent)
@@ -504,6 +511,7 @@ export function FingerMathSettingView() {
                             open={openPDFDrawer}
                             onClose={() => setOpenPDFDrawer(false)}
                             exercises={exercises}
+                            infoDownload={infoDownload}
                         />
                         </Box>
                     </Box>
