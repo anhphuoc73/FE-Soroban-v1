@@ -5,12 +5,23 @@ import { Icon, ICON_NAME } from 'src/components/svg-color/index';
 import { MainContainer } from 'src/layouts/content-page';
 import { FingerMathSettingView } from './views/finger-math-setting';
 import { FingerMathPracticeView } from './views/finger-math-practice';
+import { FingerMathPracticeAutoView } from './views/finger-math-practice-auto';
 
 
 const TABS = [
   {
     value: 'practice',
     label: 'Luyện tập',
+    icon: (
+      <Icon
+        name={ICON_NAME.report}
+        sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }}
+      />
+    ),
+  },
+  {
+    value: 'practice_auto',
+    label: 'Luyện tập tự động',
     icon: (
       <Icon
         name={ICON_NAME.report}
@@ -35,6 +46,8 @@ export function FingerMathView() {
     switch (tabs.value) {
       case 'practice':
         return <FingerMathPracticeView />;
+      case 'practice_auto':
+        return <FingerMathPracticeAutoView />;
       case 'setting':
         return <FingerMathSettingView />;
       default:
