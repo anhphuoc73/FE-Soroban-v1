@@ -87,7 +87,7 @@ export function ReportDrawer({
     doc.setFontSize(20);
 
     const pageWidth = doc.internal.pageSize.getWidth();
-    doc.text("BÁO CÁO CHI TIẾT", pageWidth / 2, 50, { align: "center" });
+    doc.text("PHIẾU RÈN LUYỆN", pageWidth / 2, 50, { align: "center" });
 
     doc.setFontSize(13);
     let y = 80;
@@ -212,7 +212,7 @@ export function ReportDrawer({
           textAlign: "center",
         }}
       >
-        BÁO CÁO CHI TIẾT
+        PHIẾU RÈN LUYỆN
       </Typography>
 
       {/* Thông tin */}
