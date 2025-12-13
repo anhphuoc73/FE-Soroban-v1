@@ -81,7 +81,6 @@ export function FingerMathSettingView() {
         teachername: congfigFingerMath?.teachername,
         valueLesson: levelChild.find(item => item.idChild === childId)?.value,
     })
-    
 
     const handleLevelParentChange = (event) => {
         const idParent = event.target.value;

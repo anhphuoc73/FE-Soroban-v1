@@ -1,8 +1,9 @@
 import { Box, Button, Typography, TextField, IconButton } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Iconify } from 'src/components/iconify';
 
 export function Timer({initialTime, setInitialTime, equal, setEqual, start, setStart}) { 
+    const audioRef = useRef(null);
     useEffect(() => {
         if (!equal && start) {
             if (initialTime <= 0) {
