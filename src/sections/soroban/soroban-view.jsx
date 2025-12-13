@@ -6,6 +6,7 @@ import { Tab, Box } from "@mui/material";
 import Tabs from '@mui/material/Tabs';
 import { Icon, ICON_NAME } from 'src/components/svg-color/index';
 import { SorobanPracticeView } from './views/soroban-math-practice';
+import { SorobanPracticeAutoView } from './views/soroban-math-practice-auto';
 import { SorobanSettingView } from './views/soroban-math-setting';
 
 
@@ -19,6 +20,16 @@ const TABS = [
   { 
     value: 'practice', 
     label: 'Luyện tập', 
+    icon: (
+      <Icon
+        name={ICON_NAME.report}
+        sx={{ display: 'flex', alignItems: 'center', mr: 1, width: '18px' }}
+      />
+    ),
+  },
+  { 
+    value: 'practice_auto', 
+    label: 'Luyện tập tự động', 
     icon: (
       <Icon
         name={ICON_NAME.report}
@@ -44,6 +55,8 @@ export function SorobanView() {
     switch (tabs.value) {
       case 'practice':
         return <SorobanPracticeView />;
+        case 'practice_auto':
+        return <SorobanPracticeAutoView />;
       case 'setting':
         return <SorobanSettingView />;
       default:
