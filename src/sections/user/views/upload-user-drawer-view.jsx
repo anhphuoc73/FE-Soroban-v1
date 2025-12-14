@@ -204,7 +204,7 @@ export default function UploadUserDrawerView() {
             </Select>
           </FormControl>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Upload tài khoản
+            
           </Typography>
 
           {/* Chọn file Excel */}
