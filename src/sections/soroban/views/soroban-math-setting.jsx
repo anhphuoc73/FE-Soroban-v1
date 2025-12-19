@@ -220,7 +220,7 @@ export function SorobanSettingView() {
                 selectedLevelList.find(item => item.idChild === selectedChildId)?.value || "";
             console.log("selectedLessonValue:", selectedLessonValue);
             const selectedKeyLesson =
-                caculation === "1"
+                (caculation === "1" ||  caculation === 1)
                     ? childId
                     : selectedChildId;
             console.log("selectedKeyLesson:", selectedKeyLesson);       
