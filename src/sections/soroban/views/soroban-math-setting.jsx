@@ -209,16 +209,21 @@ export function SorobanSettingView() {
         setErrorMessages(newErrorMessages);
         if (isValid) {
             const selectedChildId = caculation === "1" ? childId : childIdMultiplication;
+            console.log("selectedChildId:", selectedChildId);
             const selectedLevelList =
                 caculation === "1"
                     ? levelChild
                     : levelChildMultiplicationdivision;
+            console.log("selectedLevelList:", selectedLevelList);
+
             const selectedLessonValue =
                 selectedLevelList.find(item => item.idChild === selectedChildId)?.value || "";
+            console.log("selectedLessonValue:", selectedLessonValue);
             const selectedKeyLesson =
                 caculation === "1"
                     ? childId
                     : selectedChildId;
+            console.log("selectedKeyLesson:", selectedKeyLesson);       
             let param = {
                 mathTypeId: 2,
                 mathTypeName: "soroban",
@@ -244,7 +249,6 @@ export function SorobanSettingView() {
                 fullname,
                 teachername,
             }
-            console.log("param", param)
             if (+caculation === 1) {
                 const key = +param?.keyLesson;
                 const allowedSpecial = [90, 130, 170, 260, 300, 390, 430];
