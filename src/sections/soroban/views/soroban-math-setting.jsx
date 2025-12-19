@@ -244,6 +244,7 @@ export function SorobanSettingView() {
                 fullname,
                 teachername,
             }
+            console.log("param", param)
             if (+caculation === 1) {
                 const key = +param?.keyLesson;
                 const allowedSpecial = [90, 130, 170, 260, 300, 390, 430];
