@@ -211,7 +211,7 @@ export function SorobanSettingView() {
             const selectedChildId = caculation === "1" ? childId : childIdMultiplication;
             console.log("selectedChildId:", selectedChildId);
             const selectedLevelList =
-                caculation === "1"
+                (caculation === "1" ||  caculation === 1)
                     ? levelChild
                     : levelChildMultiplicationdivision;
             console.log("selectedLevelList:", selectedLevelList);
