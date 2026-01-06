@@ -94,7 +94,7 @@ export function FingerMathPracticeAutoView() {
             main: configFingerMath?.keyLesson,
             digits1:configFingerMath?.firstNumber,
             digits2: configFingerMath?.secondNumber,
-            allowExceed: "yes",
+            allowExceed: "no",
             number: configFingerMath?.numberQuestion,
         }
 
