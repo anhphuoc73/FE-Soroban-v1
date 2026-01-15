@@ -38,6 +38,7 @@ export default function UploadUserDrawerView() {
       position: 3,
       birthDay: ""
     });
+    const [duration, setDuration] = React.useState(1);
     const [openDrawer, setOpenDrawer] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
     const [user, setUser] = React.useState({});
@@ -87,7 +88,8 @@ export default function UploadUserDrawerView() {
               const expiredDate = new Date();
 
               // +3 tháng
-              expiredDate.setMonth(expiredDate.getMonth() + 3);
+              const durationNumber = +duration;
+              expiredDate.setMonth(expiredDate.getMonth() + durationNumber);
 
               // Set giờ 23:59:59
               expiredDate.setHours(23, 59, 59, 0);
@@ -178,6 +180,17 @@ export default function UploadUserDrawerView() {
               <FormControlLabel value={5} control={<Radio />} label="Học sinh" />
             </RadioGroup>
           </FormControl>
+          <TextField
+            label="Nhập thời hạn(tháng)"
+            type="number"
+            fullWidth
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+            sx={{ mt: 2 , mb: 2}}
+            inputProps={{
+              min: 1,
+            }}
+          />
           <FormControl fullWidth>
             <InputLabel id="school-select-label">Chọn trung tâm</InputLabel>
             <Select
